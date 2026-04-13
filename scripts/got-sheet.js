@@ -254,11 +254,14 @@ class GOTActorSheet extends ActorSheet {
         else if (normSize.includes("batalhao")) sizeBonus = 25;
         else if (normSize.includes("legiao")) sizeBonus = 50;
 
-        m.saude.max = (finalStats.disciplina * 3) + sizeBonus;
-        if (m.saude.value === undefined || (m.saude.value === 0 && !m.saude.initialized)) {
-            m.saude.value = m.saude.max;
-            m.saude.initialized = true;
+        const calculatedHealthMax = (finalStats.disciplina * 3) + sizeBonus;
+        m.saude = m.saude || { value: 0, max: 0 };
+        
+        // If the unit has 0 max health in DB, it is newly created. Initialize to full.
+        if (m.saude.value === undefined || (m.saude.value === 0 && m.saude.max === 0)) {
+            m.saude.value = calculatedHealthMax;
         }
+        m.saude.max = calculatedHealthMax;
 
         if (m.moral === undefined) m.moral = finalStats.disciplina;
         m.movimento_final = finalStats.movimento;
@@ -2832,6 +2835,16 @@ class GOTBattleHUD extends Application {
             };
         }
 
+        const typeKey = m.tipo || "Infantaria";
+        const icons = {
+            "Garrison": "fas fa-shield-alt", "Engenheiros": "fas fa-hammer", "Mulas / Vagões": "fas fa-horse-head",
+            "Corvos": "fas fa-crow", "Infantaria": "fas fa-male", "Batedores": "fas fa-eye",
+            "Arqueiros": "fas fa-bullseye", "Cavalaria": "fas fa-horse", "Navios Furtivos": "fas fa-ship",
+            "Navios de Guerra": "fas fa-anchor", "Tropas Especiais": "fas fa-star", "Mercenários": "fas fa-coins",
+            "Camponeses": "fas fa-user-friends", "Elefantes": "fas fa-paw"
+        };
+        const typeIcon = icons[typeKey] || "fas fa-flag";
+
         return {
             actor, token: this.activeToken, system,
             healthValue, healthMax, healthPct,
@@ -2849,7 +2862,8 @@ class GOTBattleHUD extends Application {
             points: sheetContext.points || {},
             target: targetInfo,
             tacticsBonus: m.luta_bonus_from_tactics || 0,
-            activeTab: this.activeTab || 'ataque'
+            activeTab: this.activeTab || 'ataque',
+            typeIcon
         };
     }
 
@@ -2943,22 +2957,41 @@ class GOTBattleHUD extends Application {
 
             if (discipline <= 0) return ui.notifications.error("Sem Disciplina para reagrupar!");
 
-            const comandante = actor.getFlag("got-character-sheet", "comandanteData");
-            const warfare = comandante ? (comandante.warfare || 0) : 0;
-            const comando = comandante ? (comandante.comando || 0) : 0;
+            const cmdId = actor.system.militar.comandante;
+            let warfare = 2;
+            let comando = 0;
 
+            if (cmdId && game.actors.get(cmdId)) {
+                const a = game.actors.get(cmdId);
+                warfare = Number(a.system?.habilidades?.guerra?.base) || 2;
+                const specs = a.system?.habilidades?.guerra?.especialidades || [];
+                for (let s of Object.values(specs)) {
+                    if (!s) continue;
+                    let sName = (typeof s.name === "string") ? s.name : (s.label || "");
+                    const normSName = sName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    if (normSName.includes("comando")) {
+                        comando = Number(s.value || 0);
+                    }
+                }
+            }
+
+            const cd = 17 - discipline;
             const formula = `${warfare + comando}d6kh${warfare}`;
             const roll = new Roll(formula);
             await roll.evaluate();
 
-            await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: "Tentativa de Reagrupar Unidade (Comando)" });
+            await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `<b>Tática de Reagrupar</b><br>Teste do General (Guerra)<br>Dificuldade (CD): <b>${cd}</b>` });
 
-            if (roll.total >= 9) {
-                await actor.update({ "system.militar.moral": discipline - 1 });
-                ui.notifications.info("Unidade Reagrupada!");
+            if (roll.total >= cd) {
+                const healthMax = actor.system.militar.saude?.max || 10;
+                await actor.update({ 
+                    "system.militar.moral": discipline - 1,
+                    "system.militar.saude.value": healthMax 
+                });
+                ui.notifications.info(`Sucesso (${roll.total} vs ${cd})! Unidade Reagrupada no campo de batalha.`);
             } else {
                 await actor.update({ "system.militar.moral": discipline - 1 });
-                ui.notifications.warn("Falha ao reagrupar!");
+                ui.notifications.warn(`Falhou (${roll.total} vs ${cd})! Tropa não conseguiu reagrupar e recuou mais.`);
             }
         });
 

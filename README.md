@@ -45,7 +45,7 @@ O sistema de combate de exércitos deste módulo foi balanceado com regras espec
 - **Cálculo de Dano:** O Dano é automaticamente multiplicado pelo tamanho da unidade (x2 para Unidades, x3 Batalhões, x4 Legiões), validando se o General possui o nível de **Guerra** necessário para gerir tal escala.
 
 ### 3. Battle HUD (Atalho Tático)
-- Atalho rápido (Keybind customizável) que exibe as estatísticas vitais, movimentos restantes e opções de ataque sem a necessidade de manter a ficha do ator aberta, otimizando o espaço da tela.
+- Atalho rápido (Keybind customizável Default:'k' & 'g') que exibe as estatísticas vitais, movimentos restantes e opções de ataque sem a necessidade de manter a ficha do ator aberta, otimizando o espaço da tela.
 
 ### 4. Gestão de Feudos e Casas
 - Fichas dedicadas para controle de Riqueza, População, Defesa e Terras, permitindo que os jogadores gerenciem o crescimento de sua nobreza durante o jogo.

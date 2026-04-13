@@ -9,7 +9,7 @@
     transform: translateX(-50%) !important;
     top: auto !important;
     width: 1050px !important;
-    height: 260px !important;
+    height: 300px !important;
     /* Slightly larger than internal HUD */
     background: transparent !important;
     border: none !important;
@@ -39,7 +39,7 @@
     /* Align closer to bottom of app window */
     left: 25px !important;
     width: 1000px !important;
-    height: 250px !important;
+    height: 280px !important;
     /* FIXED HEIGHT */
     background: rgba(12, 12, 12, 0.98) !important;
     backdrop-filter: blur(20px) !important;
@@ -142,11 +142,11 @@
 }
 
 .got-hud .hud-portrait-container {
-    width: 105px !important;
+    width: 85px !important;
     /* Reduced to give more room for name */
-    height: 105px !important;
-    min-height: 105px !important;
-    min-width: 105px !important;
+    height: 85px !important;
+    min-height: 85px !important;
+    min-width: 85px !important;
     border-radius: 50% !important;
     border: 3px solid #d4af37 !important;
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.4) !important;

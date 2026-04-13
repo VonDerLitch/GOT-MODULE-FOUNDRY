@@ -44,12 +44,15 @@
             <div class="fleeing-overlay"><i class="fas fa-running"></i> FUGINDO</div>
             {{/if}}
         </div>
-        <div class="hud-actor-name">{{actor.name}}</div>
-        <div class="unit-size-tag">{{system.militar.tamanho}} (x{{sizeMultiplier}})</div>
+        <div class="hud-actor-name" style="margin-top: 8px;">{{actor.name}}</div>
     </div>
 
     {{!-- 2. Navigation & Content --}}
     <div class="hud-main-container">
+        <div class="hud-unit-metadata-header" style="display: flex; gap: 20px; align-items: center; justify-content: flex-start; margin-bottom: 5px; border-left: 3px solid #8b0000; padding-left: 10px;">
+            <div class="meta-item"><i class="{{typeIcon}}" style="color: #d4af37;"></i> <span style="text-transform: uppercase; font-size: 0.8em; color: #fff;">{{system.militar.tipo}}</span></div>
+            <div class="meta-item"><i class="fas fa-users" style="color: #d4af37;"></i> <span style="text-transform: uppercase; font-size: 0.8em; color: #fff;">{{system.militar.tamanho}} (x{{sizeMultiplier}})</span></div>
+        </div>
         <nav class="hud-tabs">
             <a class="hud-tab-btn {{#if (eq activeTab 'ataque')}}active{{/if}}" data-tab="ataque">GUERRA</a>
             <a class="hud-tab-btn {{#if (eq activeTab 'comando')}}active{{/if}}" data-tab="comando">COMANDO</a>
