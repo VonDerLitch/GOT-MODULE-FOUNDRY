@@ -1,0 +1,25 @@
+{
+    "GOT": {
+        "SheetName": "Ficha de Gelo e Fogo",
+        "habilidades": {
+            "agilidade": "Agilidade",
+            "lidar_com_animais": "Lidar com Animais",
+            "atletismo": "Atletismo",
+            "percepcao": "Percepção",
+            "astucia": "Astúcia",
+            "enganacao": "Enganação",
+            "resistencia": "Resistência",
+            "luta": "Luta",
+            "cura": "Cura",
+            "idioma": "Idioma",
+            "conhecimento": "Conhecimento",
+            "pontaria": "Pontaria",
+            "persuasao": "Persuasão",
+            "status": "Status",
+            "furtividade": "Furtividade",
+            "sobrevivencia": "Sobrevivência",
+            "guerra": "Guerra",
+            "vontade": "Vontade"
+        }
+    }
+}

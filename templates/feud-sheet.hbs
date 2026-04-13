@@ -1,0 +1,296 @@
+<form class="{{cssClass}} universal-feud" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        <div class="header-fields">
+            <div class="header-row">
+                <h1 class="charname">
+                    <input name="name" type="text" value="{{actor.name}}" placeholder="Nome do Feudo/Cidade" />
+                </h1>
+                <div class="sheet-type-container">
+                    <select name="system.tipo_ficha" class="sheet-type-select">
+                        <option value="character" {{#if (eq system.tipo_ficha "character" )}}selected{{/if}}>Personagem
+                        </option>
+                        <option value="unit" {{#if (eq system.tipo_ficha "unit" )}}selected{{/if}}>Unidade Militar
+                        </option>
+                        <option value="feud" {{#if (eq system.tipo_ficha "feud" )}}selected{{/if}}>Feudo/Cidade</option>
+                    </select>
+                </div>
+            </div>
+            <p class="feud-tagline">Administração de Domínio</p>
+        </div>
+    </header>
+
+    <nav class="sheet-tabs tabs">
+        <a class="item" data-tab="recursos">Recursos da Casa</a>
+        <a class="item" data-tab="infraestrutura">Infraestrutura</a>
+        <a class="item" data-tab="anotacoes">Anotações</a>
+    </nav>
+
+    <div class="feud-admin-header">
+        {{!-- Slot: Senhor da Casa --}}
+        <div class="admin-slot senhor-slot relative-slot {{#if senhor}}has-leader{{else}}empty-slot{{/if}}"
+            data-rel="senhor">
+            <div class="leader-portrait">
+                <img src="{{#if senhor}}{{senhor.img}}{{else}}icons/svg/crown-gold.svg{{/if}}" />
+            </div>
+            {{#if senhor}}<a class="relative-remove remove-relative" data-rel="senhor" title="Remover Senhor"><i
+                    class="fas fa-times"></i></a>{{/if}}
+            <div class="leader-info">
+                <label>Senhor da Casa</label>
+                <div class="leader-name">{{#if senhor}}{{senhor.name}}{{else}}Vazio{{/if}}</div>
+                <div class="leader-skills">
+                    {{#if senhor}}
+                    <span>Gestão: {{senhor.gestao}}</span>
+                    {{else}}
+                    <span class="hint">Arraste o Senhor</span>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        {{!-- Slot: Castelão / Administrador --}}
+        <div class="admin-slot castelao-slot relative-slot {{#if castelao}}has-leader{{else}}empty-slot{{/if}}"
+            data-rel="castelao">
+            <div class="leader-portrait">
+                <img src="{{#if castelao}}{{castelao.img}}{{else}}icons/svg/mystery-man.svg{{/if}}" />
+            </div>
+            {{#if castelao}}<a class="relative-remove remove-relative" data-rel="castelao"
+                title="Remover Administrador"><i class="fas fa-times"></i></a>{{/if}}
+            <div class="leader-info">
+                <label>Castelão / Administrador</label>
+                <div class="leader-name">{{#if castelao}}{{castelao.name}}{{else}}Vazio{{/if}}</div>
+                <div class="leader-skills">
+                    {{#if castelao}}
+                    <span>Gestão: {{castelao.gestao}}</span>
+                    <span>Torneios: {{castelao.torneios}}</span>
+                    {{else}}
+                    <span class="hint">Arraste o Castelão</span>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        {{!-- Slot: Chefe Militar --}}
+        <div class="admin-slot militar-slot relative-slot {{#if chefe_militar}}has-leader{{else}}empty-slot{{/if}}"
+            data-rel="chefe_militar">
+            <div class="leader-portrait">
+                <img src="{{#if chefe_militar}}{{chefe_militar.img}}{{else}}icons/svg/sword.svg{{/if}}" />
+            </div>
+            {{#if chefe_militar}}<a class="relative-remove remove-relative" data-rel="chefe_militar"
+                title="Remover Chefe Militar"><i class="fas fa-times"></i></a>{{/if}}
+            <div class="leader-info">
+                <label>Chefe Militar</label>
+                <div class="leader-name">{{#if chefe_militar}}{{chefe_militar.name}}{{else}}Vazio{{/if}}</div>
+                <div class="leader-skills">
+                    {{#if chefe_militar}}
+                    <span>Comando: {{chefe_militar.comando}}</span>
+                    {{else}}
+                    <span class="hint">Arraste o Chefe</span>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#if (or senhor castelao chefe_militar)}}
+    <div class="admin-perks">
+        {{#if (gt totalGestao 0)}}<span class="perk-tag" title="Soma da Gestão do Senhor e Castelão"><i
+                class="fas fa-percent"></i> Desconto em Obras: -{{multiply totalGestao 5}}%</span>{{/if}}
+        {{#if chefe_militar}}<span class="perk-tag"
+            title="Capacidade de recrutamento baseada no Comando do Chefe Militar"><i class="fas fa-users-cog"></i>
+            Recrutamento: {{chefe_militar.recrutamento}} soldados</span>{{/if}}
+    </div>
+    {{/if}}
+
+    <section class="sheet-body">
+        <div class="tab recursos" data-tab="recursos">
+            <div class="feud-grid">
+                {{!-- Fortuna --}}
+                <div class="recurso-item"
+                    title="Fortuna: A riqueza líquida, ouro e moedas da casa. Usada para construções e contratações.">
+                    <label><i class="fas fa-coins"></i> Fortuna</label>
+                    <input type="number" name="system.dominio.fortuna" value="{{system.dominio.fortuna}}" />
+                </div>
+                {{!-- Poder --}}
+                <div class="recurso-item"
+                    title="Poder: A força militar, influência marcial e lealdade das tropas. Essencial para recrutar e manter exércitos.">
+                    <label><i class="fas fa-fist-raised"></i> Poder</label>
+                    <input type="number" name="system.dominio.poder" value="{{system.dominio.poder}}" />
+                </div>
+                {{!-- Lei --}}
+                <div class="recurso-item"
+                    title="Lei: A justiça e o controle sobre o crime. Afeta a Ordem Pública e a estabilidade.">
+                    <label><i class="fas fa-gavel"></i> Lei</label>
+                    <input type="number" name="system.dominio.lei" value="{{system.dominio.lei}}" />
+                </div>
+                {{!-- População --}}
+                <div class="recurso-item"
+                    title="População: O número de plebeus e habitantes. Gera mão de obra mas exige comida e ordem.">
+                    <label><i class="fas fa-users"></i> População</label>
+                    <input type="number" name="system.dominio.populacao" value="{{system.dominio.populacao}}" />
+                </div>
+                {{!-- Influência --}}
+                <div class="recurso-item" title="Influência: O prestígio político e social da casa nos Sete Reinos.">
+                    <label><i class="fas fa-crown"></i> Influência</label>
+                    <input type="number" name="system.dominio.influencia" value="{{system.dominio.influencia}}" />
+                </div>
+                {{!-- Defesa --}}
+                <div class="recurso-item" title="Defesa: A infraestrutura defensiva, muralhas e fortificações.">
+                    <label><i class="fas fa-shield-alt"></i> Defesa</label>
+                    <input type="number" name="system.dominio.defesa" value="{{system.dominio.defesa}}" />
+                </div>
+                {{!-- Vida da Muralha (Calculado) --}}
+                <div class="recurso-item"
+                    title="Vida da Muralha: Pontos de vida da fortificação (baseado no nível da Muralha).">
+                    <label><i class="fas fa-heart"></i> Vida da Muralha</label>
+                    <input type="number" value="{{infraBonus.vida_muralha}}" readonly />
+                </div>
+                {{!-- Comida --}}
+                <div class="recurso-item"
+                    title="Comida: O suprimento de grãos, carne e vegetais. Vital para manter a população e tropas sem penalidades.">
+                    <label><i class="fas fa-apple-alt"></i> Comida</label>
+                    <input type="number" name="system.dominio.comida" value="{{system.dominio.comida}}" />
+                </div>
+                {{!-- Ordem Pública --}}
+                <div class="recurso-item full-width"
+                    title="Ordem Pública: A satisfação e obediência do povo. Valores baixos podem causar revoltas e queda de produção.">
+                    <label><i class="fas fa-balance-scale"></i> Ordem Pública (Total: {{totalOrdem}})</label>
+                    <input type="number" name="system.dominio.ordem_publica" value="{{system.dominio.ordem_publica}}" />
+                </div>
+            </div>
+
+            <div class="infra-bonuses">
+                <h3>Resumo de Limites & Bônus</h3>
+                <div class="dominios-dashboard">
+                    <div class="dashboard-item {{#if limits.isStrOk}}status-ok{{else}}status-over{{/if}}"
+                        title="Limite de Estruturas">
+                        <i class="fas fa-hammer"></i>
+                        <span>Espaço de Obras: <strong>{{builtStructures.length}} /
+                                {{limits.estruturas}}</strong></span>
+                    </div>
+                    <div class="dashboard-item {{#if limits.isPopOk}}status-ok{{else}}status-over{{/if}}"
+                        title="Limite de População">
+                        <i class="fas fa-users"></i>
+                        <span>Limite Populacional: <strong>{{limits.populacao}}</strong></span>
+                    </div>
+                    <div class="dashboard-item {{#if limits.isSoldiersOk}}status-ok{{else}}status-over{{/if}}"
+                        title="Limite de Soldados">
+                        <i class="fas fa-fist-raised"></i>
+                        <span>Capacidade Militar: <strong>{{limits.soldados}}</strong></span>
+                    </div>
+                </div>
+                <div class="bonus-row">
+                    <span title="{{yieldTooltips.fortuna}}"><i class="fas fa-coins"></i> Fortuna:
+                        <strong>+{{netYields.fortuna}}</strong></span>
+                    <span title="{{yieldTooltips.comida}}"><i class="fas fa-apple-alt"></i> Comida: <strong>{{#if (gt
+                            netYields.comida 0)}}+{{/if}}{{netYields.comida}}</strong> <small>(-{{maintenance.comida}}
+                            Manut.)</small></span>
+                    <span title="{{yieldTooltips.poder}}"><i class="fas fa-fist-raised"></i> Poder:
+                        <strong>+{{netYields.poder}}</strong></span>
+                    <span title="{{yieldTooltips.influencia}}"><i class="fas fa-crown"></i> Influência:
+                        <strong>+{{netYields.influencia}}</strong></span>
+                    <span title="{{yieldTooltips.defesa}}"><i class="fas fa-shield-alt"></i> Defesa:
+                        <strong>+{{netYields.defesa}}</strong></span>
+                </div>
+                <div class="advance-month-container">
+                    <button type="button" class="advance-month-btn"
+                        title="Coletar bônus mensais de Fortuna, Comida, Influência e Defesa">
+                        <i class="fas fa-calendar-plus"></i> Passar o Mês (Coletar Rendimentos)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab infraestrutura" data-tab="infraestrutura">
+            <div class="section-header">
+                <h3>Infraestrutura do Castelo</h3>
+                <div class="header-controls">
+                    <div class="dashboard-item">
+                        <i class="fas fa-crown"></i>
+                        <strong>{{add system.dominio.influencia infraBonus.influencia}}</strong>
+                        <span>Prestígio Total</span>
+                    </div>
+                    <div class="dashboard-item">
+                        <i class="fas fa-hammer"></i>
+                        <strong>{{builtStructures.length}} / {{limits.estruturas}}</strong>
+                        <span>Espaço de Obras (Castelo Nvl {{castleLevel}})</span>
+                    </div>
+                    <a class="build-structure-btn" title="Construir Nova Estrutura"><i class="fas fa-hammer"></i>
+                        Construir</a>
+                </div>
+            </div>
+
+            <div class="structures-list">
+                {{#each builtStructures}}
+                <div class="structure-card" data-id="{{this.id}}" data-index="{{this.index}}">
+                    <div class="structure-rank">
+                        <span class="level-badge">Nível {{this.level}}</span>
+                    </div>
+                    <div class="structure-info">
+                        <strong>{{this.name}}</strong>
+                        <p>{{this.desc}}</p>
+                        <div class="structure-bonus-tags">
+                            {{#if this.actualBonus.comida}}<span><i class="fas fa-apple-alt"></i>
+                                +{{this.actualBonus.comida}}</span>{{/if}}
+                            {{#if this.actualBonus.fortuna}}<span><i class="fas fa-coins"></i>
+                                +{{this.actualBonus.fortuna}}</span>{{/if}}
+                            {{#if this.actualBonus.ordem}}<span><i class="fas fa-smile"></i>
+                                +{{this.actualBonus.ordem}}</span>{{/if}}
+                            {{#if this.actualBonus.defesa}}<span><i class="fas fa-shield-alt"></i>
+                                +{{this.actualBonus.defesa}}</span>{{/if}}
+                            {{#if this.actualBonus.populacao}}<span><i class="fas fa-users"></i>
+                                +{{this.actualBonus.populacao}}</span>{{/if}}
+                            {{#if this.actualBonus.soldados}}<span><i class="fas fa-fist-raised"></i>
+                                +{{this.actualBonus.soldados}}</span>{{/if}}
+                            {{#if this.actualBonus.poder}}<span><i class="fas fa-fist-raised"></i>
+                                +{{this.actualBonus.poder}}</span>{{/if}}
+                            {{#if this.actualBonus.influencia}}<span><i class="fas fa-crown"></i>
+                                +{{this.actualBonus.influencia}}</span>{{/if}}
+                            {{#if this.actualBonus.vida_muralha}}<span><i class="fas fa-wall"></i>
+                                +{{this.actualBonus.vida_muralha}}</span>{{/if}}
+                            {{#if this.actualBonus.max_estruturas}}<span><i class="fas fa-hammer"></i>
+                                +{{this.actualBonus.max_estruturas}}</span>{{/if}}
+                        </div>
+                    </div>
+                    <div class="structure-controls-advanced">
+                        {{#if (ne this.level 5)}}
+                        <a class="upgrade-structure {{#if (ne this.id 'castelo_principal')}}{{#if (eq this.level ../castleLevel)}}disabled-upgrade{{/if}}{{/if}}"
+                            title="Melhorar para Nível {{add this.level 1}} ({{this.costLabel}})">
+                            <i class="fas fa-arrow-up"></i> Melhorar
+                        </a>
+                        {{/if}}
+                        <a class="demolish-structure" title="Demolir"><i class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+                {{else}}
+                <p class="empty-hint">O terreno está vazio. Comece a construir seu legado!</p>
+                {{/each}}
+            </div>
+
+            <div class="feud-notes-bottom">
+                <label>Administração da Cidade</label>
+                {{editor system.dominio.notas_estilo target="system.dominio.notas_estilo" button=true owner=owner
+                editable=editable}}
+            </div>
+        </div>
+
+        {{!-- Anotações Tab --}}
+        <div class="tab anotacoes" data-tab="anotacoes">
+            <div class="notes-header">
+                <label class="major-label">Crônicas e Condições do Domínio</label>
+                <div class="notes-actions">
+                    <button type="button" class="add-condition-btn {{#if activeConditions.dominada}}active{{/if}}"
+                        data-condition="Cidade Recém Dominada"><i class="fas fa-flag"></i> Dominada</button>
+                    <button type="button" class="add-condition-btn {{#if activeConditions.peste}}active{{/if}}"
+                        data-condition="Peste"><i class="fas fa-biohazard"></i> Peste</button>
+                    <button type="button" class="add-condition-btn {{#if activeConditions.saqueada}}active{{/if}}"
+                        data-condition="Saqueada"><i class="fas fa-skull-crossbones"></i> Saqueada</button>
+                </div>
+            </div>
+            <div class="notes-container">
+                {{editor system.dominio.notas target="system.dominio.notas" button=true owner=owner
+                editable=editable}}
+            </div>
+        </div>
+    </section>
+</form>

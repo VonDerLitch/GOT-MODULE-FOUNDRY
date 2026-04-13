@@ -1,0 +1,30 @@
+<div class="tree-branch">
+    {{!-- Recursive Parents --}}
+    <div class="tree-parents">
+        {{#if node.pai}}
+        {{> "modules/got-character-sheet/templates/partials/tree-node-recursive.hbs" node=node.pai}}
+        {{/if}}
+        {{#if node.mae}}
+        {{> "modules/got-character-sheet/templates/partials/tree-node-recursive.hbs" node=node.mae}}
+        {{/if}}
+    </div>
+
+    {{!-- Current Node --}}
+    <div class="tree-gen-container">
+        <div class="tree-node-pair">
+            <div class="tree-member {{#if node.isRoot}}root-node{{/if}}" data-id="{{node.id}}">
+                <img src="{{node.img}}" />
+                <span class="member-name">{{node.name}}</span>
+                {{#if node.isRoot}}<div class="root-badge">VOCÊ</div>{{/if}}
+            </div>
+
+            {{#if node.conjuge}}
+            <div class="marriage-line"></div>
+            <div class="tree-member spouse-node" data-id="{{node.conjuge.id}}">
+                <img src="{{node.conjuge.img}}" />
+                <span class="member-name">{{node.conjuge.name}}</span>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

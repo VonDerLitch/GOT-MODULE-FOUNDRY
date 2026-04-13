@@ -1,0 +1,165 @@
+<div class="got-family-tree ck3-style">
+    <h1 class="tree-house-title">{{houseName}}</h1>
+    <div class="tree-container">
+        {{!-- Generation -2: Grandparents --}}
+        <div class="tree-generation gen-minus-2">
+            <div class="gen-group paternal-grandparents">
+                {{#each generations.gen_minus_2.paternal}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            <div class="gen-spacer"></div>
+            <div class="gen-group maternal-grandparents">
+                {{#each generations.gen_minus_2.maternal}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{!-- Generation -1: Parents & Uncles --}}
+        <div class="tree-generation gen-minus-1">
+            <div class="gen-group paternal-uncles">
+                {{#each generations.gen_minus_1.paternal_uncles}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                </div>
+                {{/each}}
+            </div>
+
+            <div class="gen-group parents">
+                {{#if generations.gen_minus_1.father}}
+                <div class="tree-card" data-id="{{generations.gen_minus_1.father.id}}">
+                    <img src="{{generations.gen_minus_1.father.img}}" title="{{generations.gen_minus_1.father.name}}"
+                        onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{generations.gen_minus_1.father.name}}</span>
+                    {{#if generations.gen_minus_1.father.relation}}<span
+                        class="node-relation">{{generations.gen_minus_1.father.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if generations.gen_minus_1.mother}}
+                <div class="tree-card" data-id="{{generations.gen_minus_1.mother.id}}">
+                    <img src="{{generations.gen_minus_1.mother.img}}" title="{{generations.gen_minus_1.mother.name}}"
+                        onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{generations.gen_minus_1.mother.name}}</span>
+                    {{#if generations.gen_minus_1.mother.relation}}<span
+                        class="node-relation">{{generations.gen_minus_1.mother.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+
+            <div class="gen-group maternal-uncles">
+                {{#each generations.gen_minus_1.maternal_uncles}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{!-- Generation 0: Self, Spouse & Siblings --}}
+        <div class="tree-generation gen-0">
+            {{!-- Wrapper for everyone strictly descended from parents (Siblings + Self) --}}
+            <div class="gen-group direct-descendants">
+                {{#each generations.gen_0.siblings}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                </div>
+                {{/each}}
+
+                {{#if generations.gen_0.self}}
+                <div class="tree-card self" data-id="{{generations.gen_0.self.id}}">
+                    <img src="{{generations.gen_0.self.img}}" title="{{generations.gen_0.self.name}}"
+                        onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{generations.gen_0.self.name}}</span>
+                    {{#if generations.gen_0.self.relation}}<span
+                        class="node-relation">{{generations.gen_0.self.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+
+            {{!-- Spouse (Separate group, no bracket from parents) --}}
+            {{#if generations.gen_0.spouse}}
+            <div class="gen-group spouse-group">
+                <div class="tree-card" data-id="{{generations.gen_0.spouse.id}}">
+                    <img src="{{generations.gen_0.spouse.img}}" title="{{generations.gen_0.spouse.name}}"
+                        onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{generations.gen_0.spouse.name}}</span>
+                    {{#if generations.gen_0.spouse.relation}}<span
+                        class="node-relation">{{generations.gen_0.spouse.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+
+        {{!-- Generation +1: Children --}}
+        <div class="tree-generation gen-plus-1">
+            <div class="gen-group children">
+                {{#each generations.gen_plus_1}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{!-- Generation +2: Grandchildren --}}
+        <div class="tree-generation gen-plus-2">
+            {{#each generations.gen_plus_2}}
+            <div class="gen-group grandkids-group">
+                {{!-- <span class="group-label">Filhos de {{this.parent.name}}</span> --}}
+                {{#each this.grandkids}}
+                <div class="tree-card" data-id="{{this.id}}">
+                    <img src="{{this.img}}" title="{{this.name}}" onerror="this.src='icons/svg/mystery-man.svg'" />
+                    <span class="node-name">{{this.name}}</span>
+                    {{#if this.relation}}<span class="node-relation">{{this.relation}}</span>{{/if}}
+                    <div class="node-controls">
+                        <button class="btn-open-sheet" title="Abrir Ficha"><i class="fas fa-file-alt"></i></button>
+                        <button class="btn-focus-tree" title="Focar Árvore"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>

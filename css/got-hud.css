@@ -1,0 +1,643 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+/* FIX FOR THE FOUNDRY WINDOW ITSELF */
+#got-combat-hud.window-app,
+#got-battle-hud.window-app {
+    position: fixed !important;
+    bottom: 0px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    width: 1050px !important;
+    height: 260px !important;
+    /* Slightly larger than internal HUD */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 10000 !important;
+    pointer-events: none !important;
+}
+
+#got-combat-hud.window-app .window-header,
+#got-battle-hud.window-app .window-header {
+    display: none !important;
+}
+
+#got-combat-hud.window-app .window-content,
+#got-battle-hud.window-app .window-content {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    pointer-events: all !important;
+}
+
+/* THE HUD THE USER SEES - ABSOLUTE CONTAINMENT */
+.got-hud {
+    position: absolute !important;
+    bottom: 5px !important;
+    /* Align closer to bottom of app window */
+    left: 25px !important;
+    width: 1000px !important;
+    height: 250px !important;
+    /* FIXED HEIGHT */
+    background: rgba(12, 12, 12, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 2px solid #d4af37 !important;
+    border-top: 5px solid #8b0000 !important;
+    border-radius: 15px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 10px 25px !important;
+    gap: 30px !important;
+    color: #fff !important;
+    font-family: 'Cinzel', serif !important;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 1) !important;
+    overflow: hidden !important;
+    cursor: grab !important;
+}
+
+.got-hud:active {
+    cursor: grabbing !important;
+}
+
+/* Portrait Pillar - COMPACTED */
+.got-hud .portrait-pillar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 170px !important;
+    height: 100% !important;
+    flex-shrink: 0 !important;
+    padding: 5px 0 !important;
+    /* Reduced padding */
+}
+
+.got-hud .hud-vitals-top {
+    width: 130px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    /* Tightened gap */
+    margin-bottom: 3px !important;
+}
+
+.got-hud .hud-stat-bar {
+    height: 6px !important;
+    /* Slimmer bars */
+    background: #000 !important;
+    border-radius: 3px !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    overflow: hidden !important;
+}
+
+.got-hud .hud-stat-fill {
+    height: 100% !important;
+    min-width: 1px;
+    /* Ensure visibility if > 0% */
+}
+
+.got-hud .health .hud-stat-fill {
+    background: linear-gradient(90deg, #700000, #ff0000) !important;
+}
+
+.got-hud .effort .hud-stat-fill {
+    background: linear-gradient(90deg, #997700, #ffcc00) !important;
+}
+
+.got-hud .movement .hud-stat-fill {
+    background: linear-gradient(90deg, #006400, #00ff00) !important;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.4) !important;
+}
+
+.got-hud .movement-info {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin-top: 2px !important;
+    min-height: 12px !important;
+}
+
+.got-hud .btn-reset-move {
+    font-size: 0.6em !important;
+    color: rgba(255, 215, 0, 0.4) !important;
+    cursor: pointer !important;
+    transition: color 0.2s !important;
+}
+
+.got-hud .btn-reset-move:hover {
+    color: #ffd700 !important;
+}
+
+.got-hud .movement-info .stat-value {
+    font-size: 0.75em !important;
+    color: #ffd700 !important;
+    text-shadow: 1px 1px 2px #000 !important;
+    font-weight: bold !important;
+}
+
+.got-hud .hud-portrait-container {
+    width: 105px !important;
+    /* Reduced to give more room for name */
+    height: 105px !important;
+    min-height: 105px !important;
+    min-width: 105px !important;
+    border-radius: 50% !important;
+    border: 3px solid #d4af37 !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4) !important;
+    overflow: hidden !important;
+    background: #000 !important;
+    flex-shrink: 0 !important;
+}
+
+.got-hud .hud-portrait-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+.got-hud .hud-actor-name {
+    font-size: 0.75em !important;
+    /* Slightly larger for readability */
+    color: #d4af37 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    text-align: center !important;
+    margin-top: 5px !important;
+    line-height: 1.2 !important;
+    max-width: 160px !important;
+    word-break: break-word !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+/* Main Container Area */
+.got-hud .hud-main-container {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    justify-content: flex-start !important;
+    padding: 15px 0 !important;
+}
+
+.got-hud .hud-tabs {
+    display: flex !important;
+    gap: 20px !important;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.2) !important;
+    padding-bottom: 5px !important;
+    margin-bottom: 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.got-hud .hud-tab-btn {
+    padding: 2px 15px !important;
+    font-size: 0.85em !important;
+    color: #666 !important;
+    cursor: pointer !important;
+}
+
+.got-hud .hud-tab-btn.active {
+    color: #d4af37 !important;
+    border-bottom: 2px solid #d4af37 !important;
+    margin-bottom: -7px !important;
+    /* Overlap border */
+}
+
+.got-hud .hud-content {
+    flex-grow: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.got-hud .hud-tab-pane {
+    display: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    align-items: center !important;
+}
+
+.got-hud .hud-tab-pane.active {
+    display: flex !important;
+}
+
+/* Sub-Categories Header */
+.got-hud .category-header {
+    font-size: 0.65em !important;
+    color: #d4af37 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 8px !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+}
+
+/* Action Boxes - COMPACTED */
+.got-hud .hud-box {
+    width: 105px !important;
+    height: 105px !important;
+    min-height: 105px !important;
+    background: rgba(30, 30, 30, 0.98) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-right: 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.got-hud .box-icon {
+    font-size: 36px !important;
+    color: #d4af37 !important;
+    margin-bottom: 5px !important;
+}
+
+.got-hud .box-label {
+    font-size: 0.7em !important;
+    text-transform: uppercase !important;
+    color: #eee !important;
+    text-align: center !important;
+}
+
+/* Destiny Box - CONSTRAINED */
+.got-hud .destiny-box {
+    width: 440px !important;
+    height: 140px !important;
+    background: rgba(40, 40, 40, 0.95) !important;
+    border: 2px solid #d4af37 !important;
+    border-radius: 12px !important;
+    padding: 15px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 30px !important;
+}
+
+.got-hud .category-items {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 12px !important;
+    padding-bottom: 8px !important;
+    max-width: 750px !important;
+}
+
+/* Custom Scrollbar for HUD - Elegant Gold/Dark */
+.got-hud .category-items::-webkit-scrollbar {
+    height: 3px !important;
+}
+
+.got-hud .category-items::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 10px !important;
+}
+
+.got-hud .category-items::-webkit-scrollbar-thumb {
+    background: #d4af37 !important;
+    border-radius: 10px !important;
+}
+
+.got-hud .category-items::-webkit-scrollbar-thumb:hover {
+    background: #ffd700 !important;
+}
+
+.got-hud .hud-category {
+    flex-grow: 1 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.got-hud .destiny-display {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    min-width: 100px !important;
+}
+
+.got-hud .destiny-value {
+    font-size: 2.2em !important;
+    /* More elegant size */
+    color: #ffd700 !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.5) !important;
+    letter-spacing: 2px !important;
+    white-space: nowrap !important;
+}
+
+.got-hud .destiny-max {
+    font-size: 1em !important;
+    color: #888 !important;
+    text-transform: uppercase !important;
+}
+
+.got-hud .destiny-controls {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    flex-grow: 1 !important;
+}
+
+.got-hud .btn-destiny {
+    background: linear-gradient(to bottom, #8b0000, #500000) !important;
+    border: 1.5px solid #d4af37 !important;
+    color: #fff !important;
+    padding: 10px !important;
+    border-radius: 6px !important;
+    font-family: 'Cinzel', serif !important;
+    text-transform: uppercase !important;
+    font-size: 0.85em !important;
+    cursor: pointer !important;
+}
+
+/* End Turn - CONSTRAINED */
+.got-hud .end-turn-pillar {
+    border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-left: 25px !important;
+    height: 180px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.got-hud .hud-end-turn-btn {
+    width: 110px !important;
+    height: 110px !important;
+    min-height: 110px !important;
+    border-radius: 50% !important;
+    border: 4px solid #333 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #000 !important;
+    color: #777 !important;
+    flex-shrink: 0 !important;
+}
+/* BATTLE HUD (SPECIFIC) */
+.got-hud.got-battle-hud {
+    border-top: 5px solid #d4af37 !important;
+    border: 2px solid #8b0000 !important;
+}
+
+.got-hud.got-battle-hud .discipline .hud-stat-fill {
+    background: linear-gradient(90deg, #1e3c72, #2a5298) !important;
+    box-shadow: 0 0 10px rgba(42, 82, 152, 0.5) !important;
+}
+
+.got-hud.got-battle-hud .unit-size-tag {
+    font-size: 0.65em !important;
+    color: #ffd700 !important;
+    background: rgba(139, 0, 0, 0.4) !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    margin-top: 5px !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+.got-hud.got-battle-hud .damage-display {
+    background: linear-gradient(135deg, #1a1a1a, #2c0000) !important;
+    border: 2px solid #8b0000 !important;
+}
+
+.got-hud.got-battle-hud .damage-total {
+    font-size: 2.5em !important;
+    color: #ff3333 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6) !important;
+    line-height: 1 !important;
+}
+
+.got-hud.got-battle-hud .status-info .info-val {
+    font-size: 1.8em !important;
+    color: #ffd700 !important;
+    font-weight: bold !important;
+}
+
+.got-hud.got-battle-hud .recovery-btn {
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.got-hud.got-battle-hud .recovery-btn:hover:not(.disabled) {
+    background: rgba(139, 0, 0, 0.6) !important;
+    transform: scale(1.05) !important;
+}
+
+.got-hud.got-battle-hud .recovery-btn.disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+    filter: grayscale(1) !important;
+}
+
+.got-hud .command-summary {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 30px !important;
+    padding: 10px !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-radius: 8px !important;
+}
+
+.got-hud .leader-slot {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+}
+
+.got-hud .leader-slot label {
+    font-size: 0.6em !important;
+    color: #888 !important;
+    text-transform: uppercase !important;
+}
+
+.got-hud .leader-slot span {
+    font-size: 0.9em !important;
+    color: #d4af37 !important;
+    font-weight: bold !important;
+}
+
+.got-hud .budget-val {
+    font-size: 2em !important;
+    color: #ffd700 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
+
+.got-hud .command-warning {
+    color: #ff3333 !important;
+    font-size: 0.7em !important;
+    font-weight: bold !important;
+    animation: pulse-red 2s infinite !important;
+}
+
+.got-hud.unit-fleeing {
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.5) !important;
+    border: 3px solid #ff0000 !important;
+    animation: pulse-danger 1.5s infinite alternate !important;
+}
+
+@keyframes pulse-red {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+@keyframes pulse-danger {
+    from { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
+    to { box-shadow: 0 0 40px rgba(255, 0, 0, 0.8); }
+}
+
+/* TARGET & AUTOMATION */
+.got-hud .target-box {
+    width: 120px !important;
+    height: 105px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: rgba(40, 40, 40, 0.8) !important;
+    border: 1px solid #d4af37 !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+}
+
+.got-hud .target-img {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    border: 1.5px solid #d4af37 !important;
+    object-fit: cover !important;
+}
+
+.got-hud .target-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    font-size: 0.65em !important;
+    color: #eee !important;
+    gap: 2px !important;
+}
+
+.got-hud .effective-damage-box {
+    border: 2px solid #ff3333 !important;
+    background: rgba(139, 0, 0, 0.2) !important;
+}
+
+.got-hud .damage-val {
+    font-size: 2.2em !important;
+    color: #ff3333 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.4) !important;
+}
+
+.got-hud .leaders-info {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 30px !important;
+}
+
+/* MANEUVER STATUS */
+.got-hud .hud-maneuver.met {
+    border-color: #00ff00 !important;
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1) !important;
+}
+
+.got-hud .hud-maneuver.fail {
+    opacity: 0.5 !important;
+    filter: grayscale(0.8) !important;
+    border-color: #666 !important;
+}
+
+.got-hud .maneuver-req {
+    font-size: 0.55em !important;
+    color: #888 !important;
+    text-transform: uppercase !important;
+    margin-bottom: 2px !important;
+}
+
+.got-hud .met-status {
+    margin-top: 5px !important;
+    font-size: 0.8em !important;
+}
+
+.got-hud .hud-maneuver.met .met-status { color: #00ff00 !important; }
+.got-hud .hud-maneuver.fail .met-status { color: #ff3333 !important; }
+
+/* CHAT CARDS */
+.got-chat-card {
+    background: rgba(40, 40, 40, 0.95) !important;
+    border: 1px solid #d4af37 !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    color: #eee !important;
+    font-family: " Cinzel\, serif !important;
+ box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.got-chat-card .card-header {
+ display: flex !important;
+ align-items: center !important;
+ gap: 12px !important;
+ border-bottom: 1px solid #d4af37 !important;
+ padding-bottom: 8px !important;
+ margin-bottom: 8px !important;
+}
+
+.got-chat-card .card-header img {
+ width: 40px !important;
+ height: 40px !important;
+ border-radius: 50% !important;
+ border: 1px solid #d4af37 !important;
+ object-fit: cover !important;
+}
+
+.got-chat-card .card-header h3 {
+ margin: 0 !important;
+ color: #ffd700 !important;
+ font-size: 1.2em !important;
+ text-transform: uppercase !important;
+}
+
+.got-chat-card .maneuver-info {
+ font-size: 0.85em !important;
+ line-height: 1.4 !important;
+ color: #ccc !important;
+}
+
+.got-chat-card .maneuver-description {
+ font-size: 0.9em !important;
+ line-height: 1.5 !important;
+ font-style: italic !important;
+ margin-top: 5px !important;
+ color: #fff !important;
+}
+
+/* ACTIVE STANCE */
+.got-hud .hud-maneuver.active-stance {
+    background: rgba(255, 215, 0, 0.2) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
+    transform: scale(1.05);
+}
+
+.got-hud .hud-maneuver.active-stance .box-label {
+    color: #ffd700 !important;
+    font-weight: bold !important;
+}
+
+.got-hud .hud-maneuver.active-stance .met-status i {
+    color: #ffd700 !important;
+    text-shadow: 0 0 5px #fff !important;
+}

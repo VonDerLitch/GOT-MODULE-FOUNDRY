@@ -1,0 +1,212 @@
+<div class="got-hud">
+    {{!-- 1. Character Pillar (Portrait & Vitals Above) --}}
+    <div class="hud-pillar portrait-pillar">
+        <div class="hud-vitals-top">
+            <div class="hud-stat-group health" title="{{#if isUnit}}Saúde da Tropa{{else}}Saúde{{/if}}">
+                <div class="hud-stat-bar">
+                    <div class="hud-stat-fill" style="width: {{healthPct}}%;"></div>
+                </div>
+                <div class="hud-stat-controls">
+                    <i class="fas fa-minus btn-adjust"
+                        data-prop="{{#if isUnit}}system.militar.saude.value{{else}}system.combate_intriga.saude.value{{/if}}"
+                        data-delta="-1"></i>
+                    <span class="stat-value">{{healthValue}}</span>
+                    <i class="fas fa-plus btn-adjust"
+                        data-prop="{{#if isUnit}}system.militar.saude.value{{else}}system.combate_intriga.saude.value{{/if}}"
+                        data-delta="1"></i>
+                </div>
+            </div>
+
+            <div class="hud-stat-group effort" title="{{#if isUnit}}Moral da Tropa{{else}}Esforço Diário{{/if}}">
+                <div class="hud-stat-bar">
+                    <div class="hud-stat-fill" style="width: {{effortPct}}%;"></div>
+                </div>
+                <div class="hud-stat-controls">
+                    <i class="fas fa-minus btn-adjust"
+                        data-prop="{{#if isUnit}}system.militar.vigor{{else}}system.combate_intriga.esforco.value{{/if}}"
+                        data-delta="-1"></i>
+                    <span class="stat-value">{{effortValue}}</span>
+                    <i class="fas fa-plus btn-adjust"
+                        data-prop="{{#if isUnit}}system.militar.vigor{{else}}system.combate_intriga.esforco.value{{/if}}"
+                        data-delta="1"></i>
+                </div>
+            </div>
+            <div class="hud-stat-group movement">
+                <div class="hud-stat-bar" title="Movimento: {{moveSquaresRemaining}} / {{moveSquaresTotal}} qd">
+                    <div class="hud-stat-fill" style="width: {{movePct}}%;"></div>
+                </div>
+                <div class="hud-stat-controls movement-info">
+                    <i class="fas fa-redo btn-reset-move" title="Resetar movimento manual"></i>
+                    <span class="stat-value">{{moveSquaresRemaining}} / {{moveSquaresTotal}} qd</span>
+                </div>
+            </div>
+        </div>
+        <div class="hud-portrait-container">
+            <img class="hud-portrait-img" src="{{token.document.texture.src}}" />
+        </div>
+        <div class="hud-actor-name">{{actor.name}}</div>
+    </div>
+
+    {{!-- 2. Navigation & Content --}}
+    <div class="hud-main-container">
+        <nav class="hud-tabs">
+            <a class="hud-tab-btn {{#if (eq activeTab 'ataque')}}active{{/if}}" data-tab="ataque">ATAQUE</a>
+            <a class="hud-tab-btn {{#if (eq activeTab 'manobras')}}active{{/if}}" data-tab="manobras">MANOBRAS</a>
+            <a class="hud-tab-btn {{#if (eq activeTab 'poderes')}}active{{/if}}" data-tab="poderes">PODERES</a>
+            <a class="hud-tab-btn {{#if (eq activeTab 'vitais')}}active{{/if}}" data-tab="vitais">VITAIS</a>
+            <a class="hud-tab-btn {{#if (eq activeTab 'destino')}}active{{/if}}" data-tab="destino">DESTINO</a>
+        </nav>
+
+        <div class="hud-content">
+            {{!-- ATAQUE TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'ataque')}}active{{/if}}" data-tab="ataque">
+                <div class="hud-category">
+                    <div class="category-header">ATAQUES</div>
+                    <div class="category-items">
+                        {{#each attacks}}
+                        <div class="hud-box {{#if isUnitRoll}}hud-unit-roll{{else}}hud-weapon{{/if}}"
+                            data-item-id="{{id}}" data-stat="{{stat}}" data-label="{{label}}" title="{{name}}">
+                            <img src="{{img}}" class="item-icon" />
+                            <div class="item-name">{{name}}</div>
+                            {{#unless isUnitRoll}}
+                            <div class="item-stats">Dano: {{damage}}</div>
+                            {{/unless}}
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <div class="hud-category">
+                    <div class="category-header">AUXÍLIO TÁTICO</div>
+                    <div class="category-items">
+                        <div class="hud-box btn-toggle {{#if system.combate_intriga.sacrificar_bonus}}active{{/if}}"
+                            data-prop="system.combate_intriga.sacrificar_bonus"
+                            title="Ativa bônus de dano (Ataque Poderoso)">
+                            <i class="box-icon fas fa-gavel"></i>
+                            <div class="box-label">{{#if
+                                system.combate_intriga.sacrificar_bonus}}Poderoso{{else}}Atk.
+                                Normal{{/if}}</div>
+                        </div>
+                        <div class="hud-box btn-toggle {{#if system.combate_intriga.esforco_ativo}}active{{/if}}"
+                            data-prop="system.combate_intriga.esforco_ativo"
+                            title="Gastar 1 Esforço para ignorar penalidade de Lesão (Concentrar)">
+                            <i class="box-icon fas fa-brain"></i>
+                            <div class="box-label">{{#if
+                                system.combate_intriga.esforco_ativo}}Concentrado{{else}}Concentrar{{/if}}</div>
+                        </div>
+                        <div class="hud-box btn-toggle {{#if system.combate_intriga.sprint_ativo}}active{{/if}}"
+                            data-prop="system.combate_intriga.sprint_ativo" title="Ativa Sprint (Mover-se x4)">
+                            <i class="box-icon fas fa-running"></i>
+                            <div class="box-label">{{#if
+                                system.combate_intriga.sprint_ativo}}Correndo{{else}}Correr{{/if}}</div>
+                        </div>
+                        <div class="hud-box hud-extra-attack" title="Consome 1 de Esforço para ataque extra">
+                            <i class="box-icon fas fa-plus-circle"></i>
+                            <div class="box-label">Atk Extra</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{!-- MANOBRAS TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'manobras')}}active{{/if}}" data-tab="manobras">
+                <div class="hud-category">
+                    <div class="category-header">MANOBRAS AVANÇADAS</div>
+                    <div class="category-items maneuvers-scroll">
+                        {{#each maneuvers as |m|}}
+                        <div class="hud-box hud-maneuver" data-id="{{m.id}}" data-name="{{m.name}}" title="{{m.name}}">
+                            <i class="box-icon {{m.icon}}"></i>
+                            <div class="box-label">{{m.name}}</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            {{!-- PODERES TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'poderes')}}active{{/if}}" data-tab="poderes">
+                <div class="hud-category">
+                    <div class="category-header">QUALIDADES & BENEFÍCIOS</div>
+                    <div class="category-items maneuvers-scroll">
+                        {{#each qualities as |item|}}
+                        <div class="hud-box hud-quality" data-item-id="{{item.id}}" title="Clique para enviar ao chat">
+                            <img class="item-icon" src="{{item.img}}" />
+                            <div class="item-name">{{item.name}}</div>
+                            <div class="item-action"><i class="fas fa-comment-dots"></i></div>
+                        </div>
+                        {{/each}}
+                        {{#unless qualities}}
+                        <div class="category-empty">Nenhum poder encontrado.</div>
+                        {{/unless}}
+                    </div>
+                </div>
+            </div>
+
+            {{!-- VITAIS TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'vitais')}}active{{/if}}" data-tab="vitais">
+                <div class="hud-category">
+                    <div class="category-header">SAÚDE & DANO</div>
+                    <div class="category-items vitals-grid">
+                        <div class="hud-box damage-box">
+                            <i class="box-icon fas fa-skull"></i>
+                            <div class="box-label">Lesões</div>
+                            <div class="hud-stat-controls">
+                                <i class="fas fa-minus btn-adjust" data-prop="system.combate_intriga.lesoes.value"
+                                    data-delta="-1"></i>
+                                <span class="stat-value">{{system.combate_intriga.lesoes.value}}</span>
+                                <i class="fas fa-plus btn-adjust" data-prop="system.combate_intriga.lesoes.value"
+                                    data-delta="1"></i>
+                            </div>
+                        </div>
+
+                        <div class="hud-box damage-box">
+                            <i class="box-icon fas fa-hand-holding-medical"></i>
+                            <div class="box-label">Ferimentos</div>
+                            <div class="hud-stat-controls">
+                                <i class="fas fa-minus btn-adjust" data-prop="system.combate_intriga.ferimentos.value"
+                                    data-delta="-1"></i>
+                                <span class="stat-value">{{system.combate_intriga.ferimentos.value}}</span>
+                                <i class="fas fa-plus btn-adjust" data-prop="system.combate_intriga.ferimentos.value"
+                                    data-delta="1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{!-- DESTINO TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'destino')}}active{{/if}}" data-tab="destino">
+                <div class="hud-category">
+                    <div class="category-header">PONTOS DE DESTINO</div>
+                    <div class="category-items">
+                        <div class="hud-box destiny-box">
+                            <div class="destiny-display">
+                                <div class="destiny-value">{{destinyCurrent}} / {{destinyMax}}</div>
+                            </div>
+                            <div class="destiny-controls">
+                                <button class="btn-destiny spend-destiny" data-action="spend"
+                                    title="Gastar Ponto de Destino (Temporário)">
+                                    GASTAR PONTO
+                                </button>
+                                <button class="btn-destiny burn-destiny" data-action="burn"
+                                    title="Queimar Ponto de Destino (Permanente)">
+                                    QUEIMAR PONTO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{!-- 3. End Turn Pillar --}}
+    {{#if isCombat}}
+    <div class="hud-pillar end-turn-pillar">
+        <div class="hud-end-turn-btn btn-end-turn pulse-gold">
+            <i class="fas fa-hourglass-end"></i>
+            <div class="btn-text">Pass</div>
+        </div>
+    </div>
+    {{/if}}
+</div>

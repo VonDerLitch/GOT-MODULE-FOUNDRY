@@ -1,0 +1,3402 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+English:ital@0;1&family=MedievalSharp&display=swap');
+
+.got.sheet.actor {
+  background: #1a1a1a;
+  color: #fff;
+  /* Gold */
+  font-family: 'IM Fell English', serif;
+  border: 4px double #8b0000;
+  /* Dark Red */
+}
+
+.got.sheet.actor .sheet-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 2px solid #8b0000;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.got.sheet.actor .header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.got.sheet.actor .profile-img {
+  border: 5px solid #d4af37;
+  border-radius: 10px;
+  background: #2a2a2a;
+  flex: 0 0 250px;
+  height: 250px;
+  width: 250px;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
+
+.got.sheet.actor .charname input {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  color: #fff;
+  border: none;
+  background: transparent;
+  width: 100%;
+}
+
+.got.sheet.actor label {
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.got.sheet.actor input[type="text"],
+.got.sheet.actor input[type="number"] {
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.got.sheet.actor input:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 5px #d4af37;
+}
+
+/* Tabs */
+.got.sheet.actor .sheet-tabs {
+  border-top: 2px solid #8b0000;
+  border-bottom: 2px solid #8b0000;
+  background: #2a2a2a;
+}
+
+.got.sheet.actor .sheet-tabs .item {
+  font-family: 'Cinzel', serif;
+  padding: 10px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.got.sheet.actor .sheet-tabs .item:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.got.sheet.actor .sheet-tabs .item.active {
+  border-bottom: 3px solid #d4af37;
+  color: #fff;
+  text-shadow: 0 0 5px #d4af37;
+}
+
+/* Abilities Grid */
+.got.sheet.actor .abilities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 10px;
+}
+
+.got.sheet.actor .ability-block {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.4);
+  /* Subtle Blood Glow */
+}
+
+.got.sheet.actor .ability-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #8b0000;
+  margin-bottom: 8px;
+  padding: 5px;
+  background: linear-gradient(to right, rgba(139, 0, 0, 0.2), transparent);
+}
+
+.controlled-item .actor-name {
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #000;
+  transition: color 0.2s;
+}
+
+.controlled-item:hover .actor-name {
+  color: #8b0000;
+  text-shadow: 0 0 2px rgba(139, 0, 0, 0.2);
+}
+
+.got.sheet.actor .ability-name {
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #000;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.got.sheet.actor .ability-name:hover {
+  color: #8b0000;
+  text-shadow: 0 0 8px rgba(139, 0, 0, 0.4);
+}
+
+.got.sheet.actor .rollable:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px #ff4500;
+  background: rgba(139, 0, 0, 0.15);
+  /* Bloodier Hover */
+  border-radius: 3px;
+}
+
+/* Footer Signature & House Image */
+.got.sheet.actor .sheet-footer {
+  margin-top: 30px;
+  padding: 20px;
+  border-top: 2px solid #8b0000;
+  text-align: center;
+  background: linear-gradient(to top, rgba(139, 0, 0, 0.2), transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.got.sheet.actor .signature-img {
+  max-width: 400px;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 10px #000);
+}
+
+.got.sheet.actor .signature {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2.2em;
+  color: #c40202;
+  /* Fresh Blood */
+  text-shadow: 3px 3px 5px #000, 0 0 20px rgba(255, 0, 0, 0.6);
+  letter-spacing: 4px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.got.sheet.actor .tagline {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 1.1em;
+  color: #a00000;
+  margin-top: -5px;
+  text-transform: lowercase;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.got.sheet.actor .specialties-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.got.sheet.actor .specialty-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.got.sheet.actor .specialty-item label {
+  cursor: pointer;
+}
+
+.got.sheet.actor .specialty-item label:hover {
+  color: #fff;
+}
+
+/* Combat & Intrigue */
+.got.sheet.actor .combat-intrigue-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding-top: 10px;
+}
+
+/* Items List Styling */
+.got.sheet.actor .items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
+
+.got.sheet.actor .item-group {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid #8b0000;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.got.sheet.actor .group-header {
+  background: #2a2a2a;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d4af37;
+}
+
+.got.sheet.actor .group-header h3 {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1em;
+  color: #d4af37;
+}
+
+.got.sheet.actor .item-create {
+  font-size: 0.8em;
+  color: #fff;
+  background: #8b0000;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.got.sheet.actor .item-create:hover {
+  background: #a00000;
+}
+
+.got.sheet.actor .item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  transition: background 0.2s;
+}
+
+.got.sheet.actor .item-row:hover {
+  background: rgba(139, 0, 0, 0.4);
+}
+
+.got.sheet.actor .item-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.got.sheet.actor .item-name img {
+  border: 1px solid #d4af37;
+  border-radius: 3px;
+}
+
+.got.sheet.actor .item-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.got.sheet.actor .item-controls a {
+  color: #d4af37;
+  cursor: pointer;
+}
+
+.got.sheet.actor .item-controls a:hover {
+  color: #fff;
+  text-shadow: 0 0 5px #d4af37;
+}
+
+.got.sheet.actor .status-block {
+  background: #222;
+  border: 1px solid #8b0000;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.got.sheet.actor .status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #d4af37;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+}
+
+.got.sheet.actor .status-header h3 {
+  margin: 0;
+  border: none;
+  font-family: 'Cinzel', serif;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.got.sheet.actor .roll-initiative {
+  background: #8b0000;
+  color: #fff;
+  border: 1px solid #d4af37;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.got.sheet.actor .roll-initiative:hover {
+  background: #a00000;
+  box-shadow: 0 0 10px #ff0000;
+  transform: translateY(-1px);
+}
+
+.got.sheet.actor .status-item {
+  margin-bottom: 15px;
+}
+
+.got.sheet.actor .resource-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.got.sheet.actor .status-item label {
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.got.sheet.actor .resource-inputs input {
+  width: 60px;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.got.sheet.actor .resource-inputs span {
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 0 0 2px #000;
+}
+
+.got.sheet.actor .grid-conversion {
+  margin-left: 5px;
+}
+
+/* Effort System (SIFRP) */
+.got.sheet.actor .effort-block {
+  margin-top: 5px;
+  border-top: 1px solid rgba(139, 0, 0, 0.3);
+  padding-top: 10px;
+}
+
+.got.sheet.actor .battery-container {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 18px;
+}
+
+.got.sheet.actor .battery-body {
+  flex: 1;
+  height: 100%;
+  border: 1.5px solid #d4af37;
+  border-radius: 2px;
+  padding: 1px;
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.got.sheet.actor .battery-fill {
+  height: 100%;
+  background: linear-gradient(to right, #ffd700, #ff8c00);
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  transition: width 0.4s ease;
+}
+
+.got.sheet.actor .battery-cap {
+  width: 3px;
+  height: 8px;
+  background: #d4af37;
+  border-radius: 0 2px 2px 0;
+  margin-left: 1px;
+}
+
+/* Health Bar (Saúde) */
+.got.sheet.actor .health-bar-container {
+  display: flex;
+  align-items: center;
+  width: 60px;
+  /* Slightly larger than effort */
+  height: 20px;
+}
+
+.got.sheet.actor .health-bar-body {
+  flex: 1;
+  height: 100%;
+  border: 1.5px solid #8b0000;
+  border-radius: 3px;
+  padding: 1px;
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.got.sheet.actor .health-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #d40000, #ff4d4d);
+  box-shadow: 0 0 5px rgba(212, 0, 0, 0.5);
+  transition: width 0.4s ease;
+}
+
+.got.sheet.actor .effort-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+.got.sheet.actor .effort-actions button {
+  flex: 1;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8em;
+  padding: 5px;
+  cursor: pointer;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.got.sheet.actor .effort-actions button:hover {
+  background: #3a3a3a;
+  border-color: #d4af37;
+}
+
+.got.sheet.actor .btn-toggle-esforco.active {
+  background: #8b0000;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  animation: energy-pulse 2s infinite;
+}
+
+.got.sheet.actor .btn-toggle-sacrificio.active {
+  background: #1a1a1a;
+  color: #d4af37;
+  border-color: #8b0000;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.6);
+  text-shadow: 0 0 5px #d4af37;
+}
+
+.got.sheet.actor .btn-gastar-esforco {
+  border-color: #8b0000;
+}
+
+.got.sheet.actor .btn-gastar-esforco:hover {
+  background: rgba(139, 0, 0, 0.4);
+}
+
+@keyframes energy-pulse {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  }
+
+  100% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  }
+}
+
+/* Scrollbar Styling */
+.got.sheet.actor ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.got.sheet.actor ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.got.sheet.actor ::-webkit-scrollbar-thumb {
+  background: #8b0000;
+  border-radius: 10px;
+}
+
+.got.sheet.actor ::-webkit-scrollbar-thumb:hover {
+  background: #a00000;
+}
+
+/* Biography Tab */
+.got.sheet.actor .bio-container {
+  height: 500px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Orbital Layout */
+.got.sheet.actor .orbital-wrapper {
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(139, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+  border-radius: 10px;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.got.sheet.actor .orbital-container {
+  position: relative;
+  width: 500px;
+  height: 500px;
+}
+
+.got.sheet.actor .orbital-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  text-align: center;
+}
+
+.got.sheet.actor .orbital-center img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #8b0000;
+  box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+}
+
+.got.sheet.actor .center-name {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  color: #fff;
+  font-size: 1.2em;
+  text-shadow: 0 0 5px #000;
+  margin-top: 5px;
+}
+
+.got.sheet.actor .orbital-slot {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  top: 50%;
+  left: 50%;
+  margin: -35px;
+  /* Offset to center the slot itself on the calculated point */
+  border: 1px dashed #444;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+/* Individual Slot Positioning (Circle with radius ~210px) */
+.got.sheet.actor .slot-0 {
+  transform: rotate(0deg) translateY(-210px) rotate(0deg);
+}
+
+.got.sheet.actor .slot-1 {
+  transform: rotate(30deg) translateY(-210px) rotate(-30deg);
+}
+
+.got.sheet.actor .slot-2 {
+  transform: rotate(60deg) translateY(-210px) rotate(-60deg);
+}
+
+.got.sheet.actor .slot-3 {
+  transform: rotate(90deg) translateY(-210px) rotate(-90deg);
+}
+
+.got.sheet.actor .slot-4 {
+  transform: rotate(120deg) translateY(-210px) rotate(-120deg);
+}
+
+.got.sheet.actor .slot-5 {
+  transform: rotate(150deg) translateY(-210px) rotate(-150deg);
+}
+
+.got.sheet.actor .slot-6 {
+  transform: rotate(180deg) translateY(-210px) rotate(-180deg);
+}
+
+.got.sheet.actor .slot-7 {
+  transform: rotate(210deg) translateY(-210px) rotate(-210deg);
+}
+
+.got.sheet.actor .slot-8 {
+  transform: rotate(240deg) translateY(-210px) rotate(-240deg);
+}
+
+.got.sheet.actor .slot-9 {
+  transform: rotate(270deg) translateY(-210px) rotate(-270deg);
+}
+
+.got.sheet.actor .slot-10 {
+  transform: rotate(300deg) translateY(-210px) rotate(-300deg);
+}
+
+.got.sheet.actor .slot-11 {
+  transform: rotate(330deg) translateY(-210px) rotate(-330deg);
+}
+
+.got.sheet.actor .empty-orbital-slot {
+  color: #444;
+  font-size: 1.2em;
+}
+
+.got.sheet.actor .orbital-slot:hover {
+  border-color: #8b0000;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+}
+
+.got.sheet.actor .relative-item img {
+  width: 55px;
+  height: 55px;
+}
+
+.got.sheet.actor .relative-name {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7em;
+  white-space: nowrap;
+}
+
+/* Pins */
+.got.sheet.actor .pin-toggle {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  z-index: 15;
+  cursor: pointer;
+  background: #000;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #444;
+}
+
+.got.sheet.actor .pin-friend {
+  color: #2ecc71;
+  text-shadow: 0 0 5px #27ae60;
+}
+
+.got.sheet.actor .pin-hostile {
+  color: #e74c3c;
+  text-shadow: 0 0 5px #c0392b;
+}
+
+.got.sheet.actor .relationship-friend img {
+  border-color: #2ecc71;
+}
+
+.got.sheet.actor .relationship-hostile img {
+  border-color: #e74c3c;
+}
+
+/* Header Layout Switcher */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.sheet-type-container {
+  flex: 0 0 160px;
+}
+
+.sheet-type-select {
+  height: 28px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #d4af37;
+  border: 1px solid #8b0000;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.9em;
+  padding: 0 5px;
+}
+
+/* Derived Unit Stats */
+.derived-unit-stats {
+  margin: 20px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid #444;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-display label,
+.stat-box label,
+.resource-box label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  color: #000;
+  font-weight: bold;
+  font-size: 0.9em;
+  transition: color 0.2s;
+}
+
+.stat-display:hover label,
+.stat-box:hover label,
+.resource-box:hover label {
+  color: #8b0000;
+}
+
+.stat-display .stat-value {
+  font-size: 2em;
+  font-family: 'Cinzel', serif;
+  color: #000;
+  text-shadow: none;
+}
+
+.health-bar-unit .health-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+/* Unit Rolls & Controls */
+.unit-rollable label {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.unit-rollable label:hover {
+  color: #8b0000;
+  text-decoration: underline;
+}
+
+.unit-size-highlight {
+  background: rgba(139, 0, 0, 0.1);
+  padding: 5px;
+  border: 1px solid #8b0000;
+  border-radius: 4px;
+}
+
+.unit-size-highlight label {
+  color: #8b0000 !important;
+  font-weight: bold;
+}
+
+.unit-command-header {
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #8b0000;
+  align-items: center;
+}
+
+.commander-link label {
+  color: #000 !important;
+}
+
+.commander-warfare {
+  font-size: 0.8em;
+  color: #8b0000;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+}
+
+.empty-slot {
+  color: #666;
+  font-style: italic;
+}
+
+/* Character Sheet Grid Separation */
+.controlled-grid {
+  padding: 10px;
+  gap: 20px !important;
+}
+
+.controlled-column h3 {
+  border-bottom: 2px solid #8b0000;
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  margin-bottom: 10px;
+}
+
+.drop-hint-full {
+  text-align: center;
+  padding: 15px;
+  border: 2px dashed #444;
+  margin: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+.got.sheet.feud .resource-box.highlighted {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.2);
+  grid-column: span 2;
+}
+
+.got.sheet.unit .unit-health-vigor {
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border-top: 1px solid #444;
+}
+
+.got.sheet.unit .health-inputs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.unit-notes,
+.feud-notes {
+  padding: 10px;
+  min-height: 200px;
+}
+
+.unit-notes .editor,
+.feud-notes .editor {
+  height: 300px;
+}
+
+.feud-tagline {
+  font-family: 'Cinzel', serif;
+  font-style: italic;
+  color: #8b0000;
+  margin-top: -10px;
+}
+
+/* Controlled items on main sheet */
+.controlled-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.controlled-item {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  border-left: 4px solid #8b0000;
+  transition: transform 0.2s;
+}
+
+.controlled-item:hover {
+  transform: translateX(5px);
+}
+
+.controlled-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.got.sheet.actor .lineage-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+}
+
+.got.sheet.actor .lineage-parents,
+.got.sheet.actor .lineage-spouse {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.got.sheet.actor .lineage-extended {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.got.sheet.actor .relative-slot {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px dashed #444;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 150px;
+  transition: all 0.3s;
+}
+
+.got.sheet.actor .relative-slot label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  color: #d4af37;
+  border-bottom: 1px solid #8b0000;
+}
+
+.got.sheet.actor .relative-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  animation: fadeIn 0.5s;
+}
+
+.got.sheet.actor .relative-item img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #d4af37;
+  object-fit: cover;
+}
+
+.got.sheet.actor .relative-item span {
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  font-size: 0.8em;
+  color: #fff;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.got.sheet.actor .relative-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  color: #8b0000;
+  background: #000;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.got.sheet.actor .relative-item:hover .relative-remove {
+  opacity: 1;
+}
+
+.got.sheet.actor .empty-slot {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.unit-notes-container {
+  padding: 15px;
+  gap: 20px;
+}
+
+.maneuvers-quick-ref {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border: 1px solid #8b0000;
+  border-radius: 8px;
+}
+
+.maneuvers-quick-ref h3,
+.unit-text-editor h3 {
+  font-family: 'Cinzel', serif;
+  color: #8b0000;
+  border-bottom: 1px solid #8b0000;
+  margin-top: 0;
+}
+
+.maneuvers-quick-ref ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.command-leaders {
+  gap: 10px;
+}
+
+.leader-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.leader-details strong {
+  display: block;
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leader-specs {
+  font-size: 0.65em;
+  color: #8b0000;
+  font-family: 'Cinzel', serif;
+  display: flex;
+  gap: 4px;
+}
+
+/* Tactical Requirements */
+.maneuver-met {
+  border-left-color: #2e7d32 !important;
+  background: rgba(46, 125, 50, 0.05) !important;
+}
+
+.maneuver-fail {
+  border-left-color: #c62828 !important;
+  background: rgba(198, 40, 40, 0.05) !important;
+}
+
+.maneuver-specialty.met {
+  background: #2e7d32;
+}
+
+.maneuver-specialty.fail {
+  background: #c62828;
+}
+
+.maneuver-status-hint {
+  font-size: 0.75em;
+  margin-top: 3px;
+  font-weight: bold;
+}
+
+.maneuver-met .maneuver-status-hint {
+  color: #2e7d32;
+}
+
+.maneuver-fail .maneuver-status-hint {
+  color: #c62828;
+}
+
+/* Add Buttons */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.add-custom-btn,
+.add-note-btn {
+  color: #8b0000;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: transform 0.2s;
+}
+
+.add-custom-btn:hover,
+.add-note-btn:hover {
+  transform: scale(1.1);
+  color: #000;
+}
+
+.maneuver-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete-custom-maneuver {
+  color: #8b0000;
+  cursor: pointer;
+  font-size: 0.9em;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.delete-custom-maneuver:hover {
+  opacity: 1;
+  color: #c62828;
+}
+
+.custom-maneuvers-section h3 {
+  font-family: 'Cinzel', serif;
+  color: #8b0000;
+  border-bottom: 2px solid #8b0000;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+.detailed-maneuvers {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detailed-maneuvers li {
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 15px;
+  padding: 10px;
+  border-left: 3px solid #8b0000;
+  border-radius: 0 4px 4px 0;
+}
+
+.maneuver-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.maneuver-specialty {
+  background: #8b0000;
+  color: #fff;
+  padding: 1px 6px;
+  font-size: 0.7em;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+}
+
+.maneuver-bonus {
+  font-size: 0.85em;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.maneuver-bonus span {
+  color: #8b0000;
+}
+
+.maneuver-desc {
+  font-size: 0.8em;
+  color: #444;
+  margin: 0;
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.maneuvers-quick-ref li {
+  font-size: 0.9em;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
+}
+
+.maneuvers-quick-ref li strong {
+  color: #000;
+  display: block;
+}
+
+.initiative-hint,
+.rolls-hint {
+  font-size: 0.75em;
+  color: #666;
+  font-style: italic;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.got.sheet.actor .relative-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.got.sheet.actor .empty-hint {
+  width: 100%;
+  font-size: 0.8em;
+  color: #444;
+  margin-top: 10px;
+}
+
+.got.sheet.actor .infra-bonuses {
+  margin-top: 20px;
+  background: rgba(139, 0, 0, 0.05);
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px dashed #8b0000;
+}
+
+.infra-bonuses h3 {
+  font-family: 'Cinzel', serif;
+  color: #8b0000;
+  margin: 0 0 10px 0;
+  font-size: 1em;
+  text-transform: uppercase;
+}
+
+.bonus-row {
+  display: flex;
+  justify-content: space-around;
+  font-family: 'Cinzel', serif;
+  color: #333;
+}
+
+.bonus-row strong {
+  color: #8b0000;
+}
+
+.structure-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.4);
+  margin-bottom: 10px;
+  padding: 12px;
+  border-left: 4px solid #8b0000;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.structure-info strong {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1em;
+  color: #8b0000;
+}
+
+.structure-info p {
+  margin: 4px 0;
+  font-size: 0.9em;
+  color: #555;
+  font-style: italic;
+}
+
+.structure-bonus-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.structure-bonus-tags span {
+  background: rgba(139, 0, 0, 0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8em;
+  color: #8b0000;
+  font-weight: bold;
+}
+
+.build-structure-btn {
+  background: #8b0000;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.build-structure-btn:hover {
+  background: #a00000;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.demolish-structure {
+  color: #c62828;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.demolish-structure:hover {
+  opacity: 1;
+}
+
+.feud-admin-header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.admin-slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  min-height: 80px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  border: 1px dashed #ccc;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.admin-slot.has-leader {
+  border-style: solid;
+  border-color: #8b0000;
+  background: rgba(139, 0, 0, 0.05);
+}
+
+.leader-portrait {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #8b0000;
+  overflow: hidden;
+  position: relative;
+}
+
+.leader-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-relative {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #ff4444;
+  color: #fff !important;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  border: 2px solid #fff;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.remove-relative:hover {
+  background: #d32f2f;
+  transform: scale(1.25) rotate(90deg);
+  box-shadow: 0 6px 15px rgba(255, 68, 68, 0.4);
+}
+
+.leader-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.leader-info label {
+  font-size: 0.6em;
+  text-transform: uppercase;
+  color: #666;
+  font-family: 'Cinzel', serif;
+  width: 100%;
+}
+
+.leader-name {
+  font-weight: bold;
+  font-size: 0.85em;
+  color: #8b0000;
+  width: 100%;
+}
+
+.leader-skills {
+  font-size: 0.75em;
+  display: flex;
+  gap: 8px;
+  color: #444;
+}
+
+.admin-perks {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.perk-tag {
+  background: #1b5e20;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-family: 'Cinzel', serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.notes-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.add-condition-btn {
+  background: #8b0000;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  transition: all 0.2s ease;
+}
+
+.add-condition-btn.active {
+  background: #2e7d32;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.add-condition-btn.active:hover {
+  background: #1b5e20;
+}
+
+.dashboard-item {
+  background: rgba(139, 0, 0, 0.08);
+  border: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.got-chat-card {
+  font-family: 'Inter', sans-serif;
+  background: url('../../../worlds/gelo-and-fogo/parchment.png');
+  border: 2px solid #8b0000;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.got-chat-card .card-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border-bottom: 1px solid rgba(139, 0, 0, 0.3) !important;
+  padding-bottom: 5px !important;
+  margin-bottom: 8px !important;
+}
+
+.got-chat-card .card-header img {
+  border: 1px solid #d4af37 !important;
+  border-radius: 3px !important;
+  background: #000 !important;
+}
+
+.got-chat-card .card-header h3 {
+  margin: 0 !important;
+  font-family: 'Cinzel', serif !important;
+  color: #8b0000 !important;
+  font-size: 1.1em !important;
+}
+
+.got-chat-card .card-content {
+  font-size: 0.9em !important;
+  line-height: 1.4 !important;
+  color: #333 !important;
+}
+
+/* Dashboard Status Colors */
+.dashboard-item.status-ok {
+  background: rgba(46, 125, 50, 0.08) !important;
+  border-color: #2e7d32 !important;
+}
+
+.dashboard-item.status-ok i,
+.dashboard-item.status-ok strong {
+  color: #2e7d32 !important;
+}
+
+.dashboard-item.status-over {
+  background: rgba(198, 40, 40, 0.08) !important;
+  border-color: #c62828 !important;
+}
+
+.dashboard-item.status-over i,
+.dashboard-item.status-over strong {
+  color: #c62828 !important;
+}
+
+.dashboard-item i {
+  font-size: 1.5em;
+  color: #8b0000;
+  margin-bottom: 5px;
+}
+
+.dashboard-item span {
+  font-size: 0.85em;
+  color: #333;
+}
+
+.structure-rank {
+  flex: 0 0 80px;
+  text-align: center;
+}
+
+.level-badge {
+  background: #8b0000;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.structure-controls-advanced {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.upgrade-structure {
+  background: #2e7d32;
+  color: white !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.upgrade-structure:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.upgrade-structure.disabled-upgrade {
+  background: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.structures-count {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9em;
+  color: #8b0000;
+  font-weight: bold;
+}
+
+/* Social Relationships Styles */
+.got.sheet.actor .alias-slot label {
+  color: #2ecc71;
+  /* Ally Green */
+  border-bottom-color: #27ae60;
+}
+
+.got.sheet.actor .enemy-slot label {
+  color: #e74c3c;
+  /* Enemy Red */
+  border-bottom-color: #c0392b;
+}
+
+.got.sheet.actor .relationship-ally img,
+.relationship-friend img {
+  border-color: #2ecc71;
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.8);
+}
+
+.relationship-friend {
+  background: rgba(46, 204, 113, 0.15) !important;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.relationship-brother img {
+  border-color: #f1c40f;
+  box-shadow: 0 0 30px rgba(241, 196, 15, 0.9);
+}
+
+.relationship-brother {
+  background: rgba(241, 196, 15, 0.2) !important;
+  border-radius: 8px;
+  padding: 5px;
+  border: 1px solid #f1c40f;
+}
+
+.relationship-acquaintance img {
+  border-color: #3498db;
+  box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
+}
+
+.relationship-acquaintance {
+  background: rgba(52, 152, 219, 0.15) !important;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.relationship-dislike img {
+  border-color: #e67e22;
+  box-shadow: 0 0 15px rgba(230, 126, 34, 0.6);
+}
+
+.relationship-dislike {
+  background: rgba(230, 126, 34, 0.15) !important;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.got.sheet.actor .relationship-enemy img,
+.relationship-enemy img {
+  border-color: #e74c3c;
+  box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
+}
+
+.relationship-enemy {
+  background: rgba(231, 76, 60, 0.15) !important;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.relationship-hated img {
+  border-color: #9b111e;
+  box-shadow: 0 0 35px rgba(155, 17, 30, 1);
+  filter: grayscale(0.2);
+}
+
+.relationship-hated {
+  background: rgba(155, 17, 30, 0.25) !important;
+  border-radius: 8px;
+  padding: 5px;
+  border: 1px solid #9b111e;
+}
+
+.relationship-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.relative-name {
+  font-weight: bold;
+  font-size: 0.85em;
+  color: #333;
+}
+
+.affinity-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+  display: block;
+  line-height: 1;
+}
+
+/* Specific text colors */
+.relationship-brother .affinity-label {
+  color: #d4af37;
+  font-weight: bold;
+}
+
+.relationship-friend .affinity-label {
+  color: #27ae60;
+}
+
+.relationship-acquaintance .affinity-label {
+  color: #2980b9;
+}
+
+.relationship-dislike .affinity-label {
+  color: #d35400;
+}
+
+.relationship-enemy .affinity-label {
+  color: #c0392b;
+}
+
+.relationship-hated .affinity-label {
+  color: #800000;
+  font-weight: bold;
+}
+
+.got.sheet.actor .social-slot {
+  min-height: 400px;
+}
+
+.got.sheet.actor .social-slot label i {
+  margin-right: 8px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.got.sheet.actor .editor-content {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+
+/* Standalone Family Tree Application */
+#got-family-tree {
+  background: #fdf6e3;
+  background-image: radial-gradient(#d4af37 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+}
+
+.got-family-tree {
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.tree-canvas {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 100px;
+}
+
+.tree-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0 40px;
+}
+
+.tree-parents {
+  display: flex;
+  justify-content: center;
+  gap: 120px;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+/* Lines connecting parents to child */
+.tree-parents::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  width: 2px;
+  height: 60px;
+  background: #8b0000;
+}
+
+.tree-gen-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.tree-node-pair {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+}
+
+.marriage-line {
+  width: 40px;
+  height: 2px;
+  background: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+.tree-member {
+  width: 120px;
+  height: 120px;
+  border: 4px solid #8b0000;
+  border-radius: 15px;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tree-member:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 15px 35px rgba(139, 0, 0, 0.5);
+  border-color: #d4af37;
+  z-index: 20;
+}
+
+.tree-member img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.tree-member .member-name {
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Cinzel', serif;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #1a1a1a;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 10px;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.root-node {
+  border-color: #d4af37;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+  transform: scale(1.1);
+}
+
+.root-badge {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d4af37;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7em;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Footer (Descendants) */
+.tree-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 3px solid #8b0000;
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.footer-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-group h4 {
+  margin: 0 0 15px 0;
+  font-family: 'Cinzel', serif;
+  color: #8b0000;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.footer-list {
+  display: flex;
+  gap: 20px;
+}
+
+.tree-member.mini {
+  width: 65px;
+  height: 65px;
+  border-width: 2px;
+}
+
+.tree-member.mini .member-name {
+  font-size: 0.6em;
+  bottom: -20px;
+}
+
+.tree-member.circular {
+  border-radius: 50%;
+}
+
+.tree-member.circular img {
+  border-radius: 50%;
+}
+
+/* Header Button in Sheet */
+.linhagem-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(139, 0, 0, 0.15);
+}
+
+.open-family-tree {
+  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  color: white !important;
+  border: 1px solid #d4af37;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.open-family-tree:hover {
+  background: linear-gradient(135deg, #a00000 0%, #6b0000 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(139, 0, 0, 0.4);
+  border-color: #fff;
+}
+
+.open-family-tree i {
+  font-size: 1.2em;
+}
+
+/* Biografia Editor Fix */
+.got .biografia .bio-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.got .biografia .prosemirror {
+  flex-grow: 1;
+  min-height: 450px;
+  background: white !important;
+  color: #1a1a1a !important;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: text;
+}
+
+.got .biografia .editor-content {
+  min-height: 400px !important;
+  padding: 10px;
+  height: auto;
+}
+
+.got .biografia .editor {
+  min-height: 450px;
+}
+
+/* Modifiers Section in Item Sheet */
+.modifiers-section {
+  margin-top: 10px;
+  border: 1px solid #7a7971;
+  border-radius: 4px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.modifiers-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #7a7971;
+  padding-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #4b4a44;
+}
+
+.modifiers-section .add-modifier {
+  color: #4b4a44;
+  cursor: pointer;
+}
+
+.modifiers-section .add-modifier:hover {
+  color: #ff6400;
+}
+
+.modifier-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+  align-items: center;
+}
+
+.modifier-row select {
+  flex: 3;
+  height: 24px;
+  font-size: 0.9em;
+}
+
+.modifier-row input[type="number"] {
+  flex: 1;
+  text-align: center;
+  height: 24px;
+  font-size: 0.9em;
+}
+
+.modifier-row .delete-modifier {
+  color: #8b0000;
+  cursor: pointer;
+  flex: 0 0 20px;
+  text-align: center;
+}
+
+.modifier-row .delete-modifier:hover {
+  color: #ff0000;
+}
+
+/* Universal Themes for Unit and Feud Sheets */
+.got.sheet.actor.universal-unit,
+.got.sheet.actor.universal-feud {
+  background: #f4e4bc url('/systems/worldbuilding/assets/parchment.jpg');
+  background-size: cover;
+  color: #1a1a1a;
+  border: 4px double #8b0000;
+}
+
+.got.sheet.actor.universal-unit .sheet-header,
+.got.sheet.actor.universal-feud .sheet-header {
+  border-bottom: 2px solid #8b0000;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.got.sheet.actor.universal-unit label,
+.got.sheet.actor.universal-feud label {
+  color: #333;
+}
+
+.got.sheet.actor.universal-unit input,
+.got.sheet.actor.universal-feud input {
+  background: rgba(255, 255, 255, 0.5);
+  color: #000;
+  border: 1px solid #8b0000;
+}
+
+/* Unit Stats Grid */
+.unit-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #8b0000;
+  padding: 10px;
+  text-align: center;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.unit-command-header {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(139, 0, 0, 0.1);
+  border-bottom: 2px solid #8b0000;
+}
+
+.commander-link {
+  flex: 1;
+  max-width: 300px;
+}
+
+.unit-actions {
+  flex: 0 0 200px;
+  text-align: right;
+}
+
+.unit-initiative {
+  background: #8b0000;
+  color: white;
+  border: 1px solid #d4af37;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+}
+
+.unit-initiative:hover {
+  background: #a00000;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+/* --- CK3 Family Tree Style --- */
+.got-family-tree.ck3-style {
+  /* Fallback to CSS parchment if image is missing */
+  background: radial-gradient(circle, #fcfae1 0%, #e6dcb5 100%);
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  font-family: 'Cinzel', serif;
+  color: #4a3b2a;
+  /* Dark Brown Text */
+}
+
+.got-family-tree.ck3-style .tree-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px;
+  gap: 60px;
+  /* Space for connecting lines */
+}
+
+/* Generations */
+.tree-generation {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  position: relative;
+  width: 100%;
+}
+
+.gen-group {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  justify-content: center;
+}
+
+.gen-group.main-couple {
+  background: rgba(212, 175, 55, 0.2);
+  /* Highlight Main Couple */
+  border: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+/* Individual Nodes */
+.tree-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin: 0 10px;
+  /* Spacing between cards */
+}
+
+.tree-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.tree-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #444;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: #000;
+  /* Fallback background */
+}
+
+.tree-card.self img {
+  border-color: #d4af37;
+  /* Gold for Self */
+  width: 100px;
+  height: 100px;
+}
+
+.tree-card .node-name {
+  margin-top: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  color: #000;
+}
+
+/* CONNECTORS (Tree Style) */
+
+/* 1. Vertical Line Above Nodes (Connection to Parents) */
+.tree-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 2px;
+  height: 20px;
+  background: #444;
+  z-index: 0;
+}
+
+/* Hide line above Generation -2 (Grandparents - Roots) */
+.gen-minus-2 .tree-card::before {
+  display: none;
+}
+
+/* 2. Vertical Line Below Nodes (Connection to Children) */
+.tree-card::after {
+  content: '';
+  /* Only drawn if it has children, handled conceptually by groups */
+}
+
+/* 3. Horizontal Connector between Parents (Marriage) */
+.gen-group.parents,
+.gen-group.main-couple,
+.gen-group.paternal-grandparents,
+.gen-group.maternal-grandparents {
+  position: relative;
+}
+
+/* Draw line connecting the two spouses */
+.gen-group.parents::before,
+.gen-group.main-couple::before,
+.gen-group.paternal-grandparents::before,
+.gen-group.maternal-grandparents::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  /* Center vertically relative to the cards */
+  left: 50px;
+  /* Start from center of first card (width 100px) */
+  right: 50px;
+  /* End at center of last card */
+  height: 2px;
+  background: #444;
+  z-index: -1;
+  transform: translateY(-50%);
+}
+
+/* 4. Vertical Line Dropping from Parents Group to Next Gen */
+.gen-group.parents::after,
+.gen-group.main-couple::after,
+.gen-group.paternal-grandparents::after,
+.gen-group.maternal-grandparents::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  /* Extend down to meet next gen top line */
+  left: 50%;
+  width: 2px;
+  height: 40px;
+  /* Distance to next generation */
+  background: #444;
+  transform: translateX(-50%);
+}
+
+/* 5. Horizontal Bar Above Children (Siblings / Self) */
+/* This is tricky because Siblings and Self are separate groups.
+   We need a way to span them.
+   For now, strictly align visually.
+*/
+
+/* Specific fix for Gen 0 (Siblings + Self) Connector Bar */
+.tree-generation.gen-0 {
+  position: relative;
+  padding-top: 20px;
+  /* Space for the bar */
+}
+
+/* Draw a horizontal bar spanning all children in a generation if possible */
+/* Since groups are separated, we'll use a pseudo-element on the generation row IF we can center it.
+   Better approach: The "Line Above" (.tree-card::before) goes up 20px.
+   We need a horizontal bar at top: -20px that connects all ::before lines.
+*/
+
+/* Connector Bar for Groups of Children (Siblings, Uncles, Grandkids) */
+.gen-group.siblings,
+.gen-group.paternal-uncles,
+.gen-group.maternal-uncles,
+.gen-group.children,
+.gen-group.grandkids-group,
+.gen-group.direct-descendants {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  /* Space between cards */
+}
+
+/* We draw a bar across the top of the group */
+.gen-group.siblings::before,
+.gen-group.paternal-uncles::before,
+.gen-group.maternal-uncles::before,
+.gen-group.children::before,
+.gen-group.grandkids-group::before,
+.gen-group.direct-descendants::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50px;
+  /* Center of first child */
+  right: 50px;
+  /* Center of last child */
+  height: 2px;
+  background: #444;
+}
+
+/* If there is only one child, hide the horizontal bar */
+.gen-group.children:only-child::before,
+.gen-group.direct-descendants:only-child::before,
+.gen-group.direct-descendants.single-child::before {
+  display: none;
+  /* This logic is flawed because ':only-child' refers to the element, not its children.
+       We rely on visual overlap for single children.
+    */
+}
+
+
+.gen-spacer {
+  width: 50px;
+}
+
+.group-label {
+  position: absolute;
+  top: -25px;
+  font-size: 10px;
+  color: #666;
+  width: 100%;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.node-relation {
+  font-size: 10px;
+  color: #555;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* Connector between Self and Spouse */
+.gen-group.spouse-group {
+  position: relative;
+  margin-left: 40px;
+  /* Space for the connection line */
+}
+
+.gen-group.spouse-group::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  /* Center vertically with cards */
+  left: -50px;
+  /* Reach back to the Self card (40px margin + 10px overlap) */
+  width: 60px;
+  /* Length of connection */
+  height: 2px;
+  background: #444;
+  z-index: -1;
+  transform: translateY(-50%);
+}
+
+/* HOUSE TITLE */
+.tree-house-title {
+  text-align: center;
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: 32px;
+  color: #4a3b22;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 2px solid #d4af37;
+  display: inline-block;
+  padding-bottom: 5px;
+  width: 100%;
+  /* Full width for centering */
+}
+
+/* HOVER CONTROLS */
+.node-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  transition-delay: 1s;
+  /* Wait 1s before showing */
+  z-index: 20;
+  pointer-events: none;
+  /* Prevent blocking clicks when invisible */
+}
+
+/* Show controls on hover */
+.tree-card:hover .node-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Dim the image when controls are shown */
+.tree-card:hover img {
+  filter: brightness(0.5);
+  transition: filter 0.3s;
+}
+
+.node-controls button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #d4af37;
+  background: rgba(0, 0, 0, 0.8);
+  color: #d4af37;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.node-controls button:hover {
+  background: #d4af37;
+  color: #000;
+}
+
+/* UNIT SHEET OVERHAUL - COMMAND SYSTEM */
+
+.unit-size-warning {
+  display: none;
+  background: rgba(139, 0, 0, 0.1);
+  color: #8b0000;
+  padding: 10px;
+  border: 1px solid #8b0000;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.unit-size-warning.active {
+  display: block;
+}
+
+.limit-label {
+  font-size: 1.1em;
+  display: block;
+}
+
+.limit-msg {
+  font-size: 0.9em;
+  margin: 5px 0 0 0;
+  font-style: italic;
+  color: #a00;
+}
+
+.command-system-grid {
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.command-col {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #a39276;
+  /* Parchment darker border */
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.col-header {
+  border-bottom: 1px solid #a39276;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.col-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #4a3b2a;
+  /* Dark Brown */
+  border: none;
+  font-family: "Modesto Condensed", serif;
+}
+
+.col-budget {
+  font-size: 1.0em;
+  color: #7f6a4f;
+  font-weight: bold;
+}
+
+.col-budget.full {
+  color: #d32f2f;
+  /* Red when full/empty dependent on logic, let's stick to distinct color */
+}
+
+.cp-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.cp-row label {
+  flex: 1 0 100%;
+  font-weight: bold;
+  font-size: 0.9em;
+  margin-bottom: 3px;
+  color: #2c3e50;
+  /* Dark Blue-Grey */
+  text-transform: uppercase;
+}
+
+.cp-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.point-adjust {
+  color: #4a3b2a;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.2em;
+  opacity: 0.7;
+}
+
+.point-adjust:hover {
+  color: #d4af37;
+  /* Gold */
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.cp-val {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #000;
+  min-width: 25px;
+  text-align: center;
+}
+
+.cp-breakdown {
+  flex: 0 0 100%;
+  font-size: 0.75em;
+  color: #666;
+  text-align: right;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.armor-display {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #a39276;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.armor-display label {
+  display: block;
+  color: #4a3b2a;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.armor-display .stat-value {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+
+.point-roll-btn {
+  cursor: pointer;
+  margin-right: 5px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.point-roll-btn:hover {
+  color: #d4af37;
+  text-shadow: 0 0 5px #ffd700;
+  transform: scale(1.2) rotate(15deg);
+}
+
+/* RULES TAB */
+.rules-content {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 5px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.rules-content h3 {
+  border-bottom: 2px solid #a39276;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  color: #4a3b2a;
+  font-family: "Modesto Condensed", serif;
+  font-size: 1.6em;
+  text-align: center;
+}
+
+.rule-block {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #c9c0b1;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.rule-block h4 {
+  margin: 0 0 8px 0;
+  color: #7f6a4f;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 3px;
+  font-size: 1.1em;
+}
+
+.rule-block p {
+  margin: 5px 0;
+  font-size: 0.95em;
+  line-height: 1.4;
+  color: #333;
+}
+
+.rule-block code {
+  background: #e8e8e8;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-family: monospace;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.rule-block ul {
+  margin: 5px 0 5px 20px;
+  padding: 0;
+  list-style-type: disc;
+}
+
+.rule-block li {
+  font-size: 0.9em;
+  color: #444;
+}
+
+/* --- COMBAT HUD (MERGED CSS) --- */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+/* Main HUD Overlay Overlaying everything */
+.got-hud-window-clean.app {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  /* Reset Foundry Window Positioning */
+  position: fixed !important;
+  bottom: 0 !important;
+  top: auto !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 120px !important;
+  transform: none !important;
+  z-index: 10000 !important;
+}
+
+.got-hud-window-clean.app .window-header {
+  display: none !important;
+}
+
+.got-hud-window-clean.app .window-content {
+  background: transparent !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+
+#got-combat-hud {
+  position: absolute !important;
+  bottom: 25px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  min-width: 1100px !important;
+  /* Massive Expansion */
+  height: 270px !important;
+  /* Taller for super-boxes */
+  pointer-events: all !important;
+  background: rgba(10, 10, 10, 0.95) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.6) !important;
+  border-top: 5px solid #8b0000 !important;
+  border-radius: 18px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important;
+  padding: 25px 30px !important;
+  gap: 30px !important;
+  color: #fff !important;
+  font-family: 'Cinzel', serif !important;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 1) !important;
+  z-index: 100 !important;
+}
+
+.got-hud .tab.destino,
+.got-hud .tab.vitais {
+  padding-top: 10px !important;
+}
+
+.got-hud .vitals-grid {
+  display: flex !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  /* Stretch to fill height */
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  /* Center the boxes in the wide HUD */
+}
+
+.got-hud .portrait-pillar {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  width: 100px !important;
+  height: 100% !important;
+}
+
+.got-hud .hud-vitals-top {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 5px !important;
+}
+
+.got-hud .hud-portrait-container {
+  width: 80px !important;
+  height: 80px !important;
+  border-radius: 50% !important;
+  border: 3px solid #d4af37 !important;
+  position: relative !important;
+  background: #000 !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important;
+}
+
+.got-hud .hud-portrait-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.got-hud .hud-vitals {
+  position: absolute !important;
+  bottom: 5px !important;
+  left: 10% !important;
+  width: 80% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.got-hud .hud-stat-bar {
+  height: 5px !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+}
+
+.got-hud .health .hud-stat-fill {
+  background: linear-gradient(90deg, #600000, #ff0000) !important;
+  height: 100% !important;
+}
+
+.got-hud .effort .hud-stat-fill {
+  background: linear-gradient(90deg, #8a6d00, #ffcc00) !important;
+  height: 100% !important;
+}
+
+.got-hud .hud-box {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: 10px !important;
+  padding: 15px 12px !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  width: 160px !important;
+  /* Super box width */
+  height: 120px !important;
+  /* Super box height */
+  text-align: center !important;
+  overflow: hidden !important;
+  position: relative !important;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.got-hud .hud-box:hover {
+  background: rgba(212, 175, 55, 0.12) !important;
+  border-color: rgba(212, 175, 55, 0.8) !important;
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7) !important;
+}
+
+.got-hud .hud-box.active {
+  background: rgba(212, 175, 55, 0.2) !important;
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
+}
+
+.got-hud .hud-box .box-icon {
+  font-size: 2em !important;
+  color: #fff !important;
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: contain !important;
+  border: 1px solid rgba(212, 175, 55, 0.6) !important;
+  background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(15, 15, 15, 1)) !important;
+  padding: 6px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) !important;
+}
+
+.got-hud .hud-box .box-label {
+  font-size: 0.85em !important;
+  /* Maximum legibility */
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  width: 100% !important;
+  line-height: 1.2 !important;
+  font-weight: bold !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Tab Navigation & Layout */
+.got-hud .hud-main-container {
+  flex: 1 !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-bottom: 5px !important;
+}
+
+.got-hud .hud-tabs {
+  display: flex !important;
+  gap: 15px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+  margin-bottom: 12px !important;
+  padding-left: 5px !important;
+}
+
+.got-hud .hud-tab-btn {
+  padding: 6px 15px !important;
+  font-size: 0.75em !important;
+  cursor: pointer !important;
+  color: #888 !important;
+  transition: all 0.2s !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 4px 4px 0 0 !important;
+}
+
+.got-hud .hud-tab-btn:hover {
+  color: #eee !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.got-hud .hud-tab-btn.active {
+  color: #d4af37 !important;
+  border-bottom: 2px solid #d4af37 !important;
+  background: rgba(212, 175, 55, 0.15) !important;
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.5) !important;
+}
+
+.got-hud .hud-content {
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+.got-hud .hud-tab-pane {
+  display: none !important;
+  height: 100% !important;
+}
+
+.got-hud .hud-tab-pane.active {
+  display: flex !important;
+  gap: 20px !important;
+}
+
+.got-hud .maneuvers-scroll {
+  max-width: 450px !important;
+  overflow-x: auto !important;
+  padding-bottom: 10px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #8b0000 rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Destiny Styles */
+.got-hud .destiny-box {
+  background: rgba(212, 175, 55, 0.12) !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+  width: 200px !important;
+  /* Matching damage-box width */
+  height: 140px !important;
+  /* Matching damage-box height */
+  padding: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: inset 0 0 25px rgba(212, 175, 55, 0.15) !important;
+  flex-shrink: 0 !important;
+}
+
+.got-hud .destiny-controls {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin-top: 12px !important;
+}
+
+.got-hud .btn-destiny {
+  flex: 1 !important;
+  background: rgba(10, 10, 10, 0.9) !important;
+  border: 1.5px solid #d4af37 !important;
+  color: #d4af37 !important;
+  padding: 8px 5px !important;
+  font-size: 0.75em !important;
+  cursor: pointer !important;
+  border-radius: 5px !important;
+  transition: all 0.2s !important;
+  font-family: 'Cinzel', serif !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+}
+
+.got-hud .btn-destiny:hover {
+  background: #d4af37 !important;
+  color: #000 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5) !important;
+}
+
+.got-hud .btn-destiny.burn {
+  border-color: #ff3333 !important;
+  color: #ff3333 !important;
+}
+
+.got-hud .btn-destiny.burn:hover {
+  background: #8b0000 !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(139, 0, 0, 0.7) !important;
+}
+
+.got-hud .hud-category {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  height: 100% !important;
+  justify-content: flex-start !important;
+}
+
+.got-hud .category-header {
+  font-size: 0.7em !important;
+  color: rgba(212, 175, 55, 0.6) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 5px !important;
+  letter-spacing: 1px !important;
+}
+
+.got-hud .category-items {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  /* Force single row with scroll */
+  gap: 15px !important;
+  padding: 5px 2px !important;
+  align-items: flex-start !important;
+}
+
+/* Horizontal Scroll for long lists like Maneuvers */
+.got-hud .maneuvers-scroll {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(212, 175, 55, 0.4) transparent !important;
+  max-width: 900px !important;
+  /* Utilizes increased HUD width */
+  padding-bottom: 8px !important;
+}
+
+.got-hud .maneuvers-scroll::-webkit-scrollbar {
+  height: 4px !important;
+}
+
+.got-hud .maneuvers-scroll::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3) !important;
+  border-radius: 10px !important;
+}
+
+.got-hud .maneuvers-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.got-hud .hud-category {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+.got-hud .category-header {
+  font-size: 0.5em !important;
+  color: #aaa !important;
+  letter-spacing: 1px !important;
+  text-align: center !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.got-hud .category-items {
+  display: flex !important;
+  gap: 6px !important;
+}
+
+.got-hud .hud-box {
+  width: 60px !important;
+  height: 60px !important;
+  background: rgba(35, 35, 35, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.got-hud .hud-box:hover {
+  background: rgba(139, 0, 0, 0.4) !important;
+  border-color: #d4af37 !important;
+  transform: translateY(-2px) !important;
+}
+
+.got-hud .hud-box.active {
+  background: rgba(212, 175, 55, 0.25) !important;
+  border: 1px solid #d4af37 !important;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5) !important;
+}
+
+.got-hud .hud-box.active .box-icon {
+  color: #ffcc00 !important;
+  text-shadow: 0 0 5px #ffcc00 !important;
+}
+
+.got-hud .box-icon {
+  font-size: 20px !important;
+  color: #eee !important;
+  margin-bottom: 2px !important;
+}
+
+.got-hud .box-label {
+  font-size: 0.45em !important;
+  text-transform: uppercase !important;
+  color: #bbb !important;
+  letter-spacing: 0.5px !important;
+  text-align: center !important;
+  line-height: 1 !important;
+}
+
+.got-hud .movement-box {
+  position: relative !important;
+  padding-top: 15px !important;
+}
+
+.got-hud .hud-movement-energy {
+  position: absolute !important;
+  top: 5px !important;
+  left: 10% !important;
+  width: 80% !important;
+  height: 4px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+}
+
+.got-hud .hud-movement-energy .energy-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, #ff8c00, #ffd700) !important;
+  box-shadow: 0 0 5px #ffd700 !important;
+  transition: width 0.3s ease-out !important;
+}
+
+.got-hud .movement-box .box-value {
+  font-size: 0.7em !important;
+  font-weight: bold !important;
+  color: #fff !important;
+  white-space: nowrap !important;
+}
+
+.got-hud .hud-end-turn-btn {
+  width: 65px !important;
+  height: 65px !important;
+  border-radius: 50% !important;
+  border: 2px solid #333 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: #888 !important;
+  background: #000 !important;
+  transition: all 0.3s !important;
+}
+
+.got-hud .hud-end-turn-btn:hover {
+  color: #ff0000 !important;
+  border-color: #ff0000 !important;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4) !important;
+}
+
+.got-hud .pulse-gold {
+  animation: pulse-gold 2s infinite !important;
+}
+
+@keyframes pulse-gold {
+  0% {
+    border-color: #333;
+  }
+
+  50% {
+    border-color: #d4af37;
+    box-shadow: 0 0 10px #d4af37;
+  }
+
+  100% {
+    border-color: #333;
+  }
+}
+
+/* --- Combat HUD Sync & Damage Controls --- */
+.got-hud .hud-stat-group {
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.got-hud .hud-stat-bar {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.got-hud .health .hud-stat-fill {
+  background: linear-gradient(90deg, #800, #c00) !important;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.got-hud .effort .hud-stat-fill {
+  background: linear-gradient(90deg, #b80, #fa0) !important;
+  box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);
+}
+
+.got-hud .hud-stat-controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 15px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  padding: 5px 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-top: 5px !important;
+}
+
+.got-hud .btn-adjust {
+  cursor: pointer !important;
+  font-size: 0.9em !important;
+  /* Larger controls */
+  color: #aaa !important;
+  transition: all 0.2s ease !important;
+}
+
+.got-hud .btn-adjust:hover {
+  color: #fff !important;
+  transform: scale(1.6) !important;
+  text-shadow: 0 0 8px gold !important;
+}
+
+.got-hud .stat-value {
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.1em !important;
+  /* Larger numbers */
+  font-weight: bold !important;
+  color: #eee !important;
+  min-width: 25px !important;
+  text-align: center !important;
+}
+
+.got-hud .damage-box {
+  background: rgba(60, 0, 0, 0.25) !important;
+  border: 1px solid rgba(139, 0, 0, 0.5) !important;
+  width: 200px !important;
+  /* Wide for long labels like FERIMENTOS */
+  height: 140px !important;
+  /* Balanced height */
+  padding: 12px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.got-hud .damage-box .box-icon {
+  font-size: 2.2em !important;
+  color: #ff5555 !important;
+  margin-bottom: 2px !important;
+}
+
+.got-hud .damage-box .box-label {
+  font-size: 1.1em !important;
+  font-weight: bold !important;
+  color: #fff !important;
+  text-shadow: 0 2px 4px #000 !important;
+}
+
+/* --- Unit Protection Controls (Armor & Defense) --- */
+.unit-protection-controls {
+  margin: 15px 0;
+  gap: 15px;
+}
+
+.protection-box {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(139, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.protection-box:hover {
+  background: rgba(139, 0, 0, 0.03);
+  border-color: #8b0000;
+}
+
+.protection-box label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  color: #8b0000;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.protection-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.protection-controls .total-value {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #333;
+  min-width: 40px;
+}
+
+.unit-prop-adjust {
+  color: #8b0000;
+  font-size: 1.4em;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.unit-prop-adjust:hover {
+  color: #c00;
+  transform: scale(1.2);
+}
+
+.protection-box .breakdown {
+  display: block;
+  font-size: 0.75em;
+  color: #666;
+  font-style: italic;
+  margin-top: 5px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  padding-top: 3px;
+}

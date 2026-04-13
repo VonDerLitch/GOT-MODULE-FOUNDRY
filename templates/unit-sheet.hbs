@@ -1,0 +1,367 @@
+<form class="{{cssClass}} universal-unit" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        <div class="header-fields">
+            <div class="header-row">
+                <h1 class="charname">
+                    <input name="name" type="text" value="{{actor.name}}" placeholder="Nome da Unidade" />
+                </h1>
+                <div class="sheet-type-container">
+                    <select name="system.tipo_ficha" class="sheet-type-select">
+                        <option value="character" {{#if (eq system.tipo_ficha "character" )}}selected{{/if}}>Personagem
+                        </option>
+                        <option value="unit" {{#if (eq system.tipo_ficha "unit" )}}selected{{/if}}>Unidade Militar
+                        </option>
+                        <option value="feud" {{#if (eq system.tipo_ficha "feud" )}}selected{{/if}}>Feudo/Cidade</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="header-details grid grid-3col">
+                <div class="detail-field">
+                    <label>Foco da Tropa:</label>
+                    <select name="system.militar.tipo">
+                        <optgroup label="Terrestre">
+                            <option value="Infantaria" {{#if (eq system.militar.tipo "Infantaria" )}}selected{{/if}}>
+                                Infantaria (Luta)</option>
+                            <option value="Piqueiros" {{#if (eq system.militar.tipo "Piqueiros" )}}selected{{/if}}>
+                                Piqueiros (Anti-Cavalaria)</option>
+                            <option value="Espadachim" {{#if (eq system.militar.tipo "Espadachim" )}}selected{{/if}}>
+                                Espadachim (Elite)</option>
+                            <option value="Arqueiros" {{#if (eq system.militar.tipo "Arqueiros" )}}selected{{/if}}>
+                                Arqueiros (Pontaria)</option>
+                            <option value="Cavalaria" {{#if (eq system.militar.tipo "Cavalaria" )}}selected{{/if}}>
+                                Cavalaria (Luta)</option>
+                            <option value="Armas de Cerco" {{#if (eq system.militar.tipo "Armas de Cerco"
+                                )}}selected{{/if}}>Armas de Cerco (Engenharia)</option>
+                            <option value="Naval" {{#if (eq system.militar.tipo "Naval" )}}selected{{/if}}>Naval
+                                (Navio/Barco)</option>
+                            <option value="Elefante" {{#if (eq system.militar.tipo "Elefante" )}}selected{{/if}}>
+                                Elefante (Guerreiro Montado)</option>
+                            <option value="Camponês" {{#if (eq system.militar.tipo "Camponês" )}}selected{{/if}}>
+                                Camponês (Baixo Custo)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="detail-field">
+                    <label>Treinamento:</label>
+                    <select name="system.militar.treinamento">
+                        <option value="Recruta" {{#if (eq system.militar.treinamento "Recruta" )}}selected{{/if}}>
+                            Recruta (0D)</option>
+                        <option value="Treinado" {{#if (eq system.militar.treinamento "Treinado" )}}selected{{/if}}>
+                            Treinado (+1D)</option>
+                        <option value="Veterano" {{#if (eq system.militar.treinamento "Veterano" )}}selected{{/if}}>
+                            Veterano (+2D)</option>
+                        <option value="Elite" {{#if (eq system.militar.treinamento "Elite" )}}selected{{/if}}>Elite
+                            (+3D)</option>
+                    </select>
+                </div>
+                <div class="detail-field unit-size-highlight">
+                    <label>Tamanho:</label>
+                    <select name="system.militar.tamanho">
+                        <option value="Pelotão (10)" {{#if (eq system.militar.tamanho "Pelotão (10)" )}}selected{{/if}}>
+                            Pelotão (10)</option>
+                        <option value="Unidade (100)" {{#if (eq system.militar.tamanho "Unidade (100)"
+                            )}}selected{{/if}}>Unidade (100)</option>
+                        <option value="Batalhão (500)" {{#if (eq system.militar.tamanho "Batalhão (500)"
+                            )}}selected{{/if}}>Batalhão (500)</option>
+                        <option value="Legião (1000)" {{#if (eq system.militar.tamanho "Legião (1000)"
+                            )}}selected{{/if}}>Legião (1000)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sheet-tabs tabs">
+        <a class="item" data-tab="stats">Guerra</a>
+        <a class="item" data-tab="manobras">Manobras</a>
+        <a class="item" data-tab="notas">Histórico</a>
+        <a class="item" data-tab="rules"><i class="fas fa-book-open"></i> Regras</a>
+    </nav>
+
+    <section class="sheet-body">
+        <div class="tab stats" data-tab="stats">
+            <div class="unit-command-header grid grid-2col">
+                <div class="command-leaders grid grid-2col">
+                    <div class="commander-link relative-slot" data-rel="comandante">
+                        <label>Comandante</label>
+                        {{#if comandante}}
+                        <div class="relative-item" data-rel="comandante" data-id="{{comandante.id}}">
+                            <img src="{{comandante.img}}" />
+                            <div class="leader-details">
+                                <strong>{{comandante.name}}</strong>
+                                <div class="leader-specs">G:{{comandante.warfare}} C:{{comandante.comando}}
+                                    E:{{comandante.estrategia}} T:{{comandante.tatica}}</div>
+                            </div>
+                            <a class="relative-remove" data-rel="comandante" title="Remover"><i
+                                    class="fas fa-times"></i></a>
+                        </div>
+                        {{else}}
+                        <div class="empty-slot">Arrastar Comandante</div>
+                        {{/if}}
+                    </div>
+                    <div class="commander-link relative-slot" data-rel="subcomandante">
+                        <label>Subcomandante</label>
+                        {{#if subcomandante}}
+                        <div class="relative-item" data-rel="subcomandante" data-id="{{subcomandante.id}}">
+                            <img src="{{subcomandante.img}}" />
+                            <div class="leader-details">
+                                <strong>{{subcomandante.name}}</strong>
+                                <div class="leader-specs">G:{{subcomandante.warfare}} C:{{subcomandante.comando}}
+                                    E:{{subcomandante.estrategia}} T:{{subcomandante.tatica}}</div>
+                            </div>
+                            <a class="relative-remove" data-rel="subcomandante" title="Remover"><i
+                                    class="fas fa-times"></i></a>
+                        </div>
+                        {{else}}
+                        <div class="empty-slot">Arrastar Subcomandante</div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="unit-actions">
+                    <button type="button" class="unit-initiative"><i class="fas fa-swords"></i> Rolar Iniciativa de
+                        Tropa</button>
+                    <p class="initiative-hint">Baseada na Guerra dos Líderes.</p>
+                </div>
+            </div>
+
+            <!-- SIZE LIMIT WARNING -->
+            <div class="unit-size-warning {{#if sizeWarning}}active{{/if}}">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="limit-label">Limite de Comando: <strong>{{sizeLimit}}</strong></span>
+                {{#if sizeWarning}}<p class="limit-msg">{{sizeMsg}}</p>{{/if}}
+            </div>
+
+            <!-- COMMAND POINT DISTRIBUTION SYSTEM -->
+            <div class="command-system-grid grid grid-3col">
+
+                <!-- COL 1: COMMAND -->
+                <div class="command-col">
+                    <div class="col-header">
+                        <h3>Comando</h3>
+                        <div class="col-budget {{#if (eq points.cmd.avail 0)}}full{{/if}}">
+                            Pontos: {{points.cmd.used}} / {{points.cmd.total}}
+                        </div>
+                    </div>
+                    <div class="stat-rows">
+                        {{#each dist.comando as |s k|}}
+                        <div class="cp-row">
+                            <label><i class="fas fa-dice-d20 unit-rollable point-roll-btn" data-stat="{{s.key}}"
+                                    data-label="{{s.label}}"></i> {{s.label}}</label>
+                            <div class="cp-controls">
+                                <a class="point-adjust" data-action="sub" data-key="{{s.key}}"
+                                    data-category="comando"><i class="fas fa-minus-square"></i></a>
+                                <span class="cp-val">{{s.total}}</span>
+                                <a class="point-adjust" data-action="add" data-key="{{s.key}}"
+                                    data-category="comando"><i class="fas fa-plus-square"></i></a>
+                            </div>
+                            <small class="cp-breakdown">(Base {{s.base}} + {{s.added}})</small>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <!-- COL 2: STRATEGY -->
+                <div class="command-col">
+                    <div class="col-header">
+                        <h3>Estratégia</h3>
+                        <div class="col-budget {{#if (eq points.str.avail 0)}}full{{/if}}">
+                            Pontos: {{points.str.used}} / {{points.str.total}}
+                        </div>
+                    </div>
+                    <div class="stat-rows">
+                        {{#each dist.estrategia as |s k|}}
+                        <div class="cp-row">
+                            <label><i class="fas fa-dice-d20 unit-rollable point-roll-btn" data-stat="{{s.key}}"
+                                    data-label="{{s.label}}"></i> {{s.label}}</label>
+                            <div class="cp-controls">
+                                <a class="point-adjust" data-action="sub" data-key="{{s.key}}"
+                                    data-category="estrategia"><i class="fas fa-minus-square"></i></a>
+                                <span class="cp-val">{{s.total}}</span>
+                                <a class="point-adjust" data-action="add" data-key="{{s.key}}"
+                                    data-category="estrategia"><i class="fas fa-plus-square"></i></a>
+                            </div>
+                            <small class="cp-breakdown">(Base {{s.base}} + {{s.added}})</small>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <!-- COL 3: TACTICS -->
+                <div class="command-col">
+                    <div class="col-header">
+                        <h3>Tática</h3>
+                        <div class="col-budget {{#if (eq points.tac.avail 0)}}full{{/if}}">
+                            Pontos: {{points.tac.used}} / {{points.tac.total}}
+                        </div>
+                    </div>
+                    <div class="stat-rows">
+                        {{#each dist.tatica as |s k|}}
+                        <div class="cp-row">
+                            <label><i class="fas fa-dice-d20 unit-rollable point-roll-btn" data-stat="{{s.key}}"
+                                    data-label="{{s.label}}"></i> {{s.label}}</label>
+                            <div class="cp-controls">
+                                <a class="point-adjust" data-action="sub" data-key="{{s.key}}" data-category="tatica"><i
+                                        class="fas fa-minus-square"></i></a>
+                                <span class="cp-val">{{s.total}}</span>
+                                <a class="point-adjust" data-action="add" data-key="{{s.key}}" data-category="tatica"><i
+                                        class="fas fa-plus-square"></i></a>
+                            </div>
+                            <small class="cp-breakdown">(Base {{s.base}} + {{s.added}})</small>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ARMOR & DEFENSE ADJUSTMENT SYSTEM -->
+            <div class="unit-protection-controls grid grid-2col">
+                <!-- ARMOR -->
+                <div class="stat-box protection-box">
+                    <label>Armadura da Tropa</label>
+                    <div class="protection-controls">
+                        <a class="unit-prop-adjust" data-key="bonus_armadura" data-delta="-1"><i
+                                class="fas fa-minus-square"></i></a>
+                        <div class="total-value">{{system.militar.armadura}}</div>
+                        <a class="unit-prop-adjust" data-key="bonus_armadura" data-delta="1"><i
+                                class="fas fa-plus-square"></i></a>
+                    </div>
+                    <small class="breakdown">Base {{armaduraBase}} + Bônus {{system.militar.bonus_armadura}}</small>
+                </div>
+
+                <!-- DEFENSE -->
+                <div class="stat-box protection-box">
+                    <label>Defesa da Tropa</label>
+                    <div class="protection-controls">
+                        <a class="unit-prop-adjust" data-key="bonus_defesa" data-delta="-1"><i
+                                class="fas fa-minus-square"></i></a>
+                        <div class="total-value">{{unitDefense}}</div>
+                        <a class="unit-prop-adjust" data-key="bonus_defesa" data-delta="1"><i
+                                class="fas fa-plus-square"></i></a>
+                    </div>
+                    <small class="breakdown">Base {{unitDefenseBase}} + Bônus {{system.militar.bonus_defesa}}</small>
+                </div>
+            </div>
+
+            <div class="derived-unit-stats grid grid-2col">
+                <div class="stat-display health-bar-unit">
+                    <label>Saúde da Unidade</label>
+                    <div class="health-inputs">
+                        <input type="number" name="system.militar.saude.value" value="{{system.militar.saude.value}}" />
+                        /
+                        <span class="max-health-auto">{{system.militar.saude.max}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab" data-tab="manobras">
+            <div class="unit-maneuvers-container grid grid-2col">
+                <div class="maneuvers-quick-ref">
+                    <div class="section-header">
+                        <h3>Sugeridas ({{system.militar.tipo}})</h3>
+                    </div>
+                    <ul class="detailed-maneuvers">
+                        {{#each dynamicManeuvers}}
+                        <li class="{{#if this.met}}maneuver-met{{else}}maneuver-fail{{/if}}">
+                            <div class="maneuver-header">
+                                <strong>{{this.name}}</strong>
+                                <span class="maneuver-specialty {{#if this.met}}met{{else}}fail{{/if}}">
+                                    {{this.specialty}} (Nível {{this.req}})
+                                </span>
+                            </div>
+                            <div class="maneuver-bonus">Bônus: <span>{{this.bonus}}</span></div>
+                            <div class="maneuver-status-hint">
+                                Total Ativo: {{this.combinedValue}} / {{this.req}}
+                            </div>
+                            <p class="maneuver-desc">{{this.desc}}</p>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="custom-maneuvers-section">
+                    <div class="section-header">
+                        <h3>Personalizadas / Traços Especiais</h3>
+                        <a class="add-custom-btn" title="Adicionar Manobra"><i class="fas fa-plus-circle"></i></a>
+                    </div>
+                    <ul class="detailed-maneuvers">
+                        {{#each customManeuvers}}
+                        <li class="custom-maneuver-item {{#if this.met}}maneuver-met{{else}}maneuver-fail{{/if}}"
+                            data-index="{{this.index}}">
+                            <div class="maneuver-header">
+                                <strong>{{this.name}}</strong>
+                                <div class="maneuver-controls">
+                                    <span class="maneuver-specialty {{#if this.met}}met{{else}}fail{{/if}}">
+                                        {{this.specialty}} (Nível {{this.req}})
+                                    </span>
+                                    <a class="delete-custom-maneuver"><i class="fas fa-trash"></i></a>
+                                </div>
+                            </div>
+                            <div class="maneuver-bonus">Bônus: <span>{{this.bonus}}</span></div>
+                            <div class="maneuver-status-hint">
+                                Total Ativo: {{this.combinedValue}} / {{this.req}}
+                            </div>
+                            <p class="maneuver-desc">{{this.desc}}</p>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab notas" data-tab="notas">
+            <div class="unit-text-editor full-width">
+                <div class="section-header">
+                    <h3>Histórico e Notas da Unidade</h3>
+                    <a class="add-note-btn" title="Nova Nota"><i class="fas fa-edit"></i></a>
+                </div>
+                {{editor system.militar.notas target="system.militar.notas" button=true owner=owner editable=editable}}
+            </div>
+        </div>
+        <div class="tab rules" data-tab="rules">
+            <div class="rules-content">
+                <h3>📜 Regras de Comando e Combate</h3>
+
+                <div class="rule-block">
+                    <h4>⚔️ Comandantes e Limites</h4>
+                    <p><strong>Limite de Tamanho:</strong> O nível de <em>Guerra</em> do Comandante define quantos
+                        homens ele pode liderar sem penalidades.</p>
+                    <p><strong>Penalidade de Comando:</strong> Se a Guerra for insuficiente, o <strong>Dano NÃO é
+                            multiplicado</strong> pelo tamanho (x1) e a unidade <strong>não pode Reagrupar</strong> se
+                        for destruída.</p>
+                    <p><strong>Pontos de Comando:</strong> (Comando + Estratégia + Tática) do Comandante +
+                        Sub-comandante x <strong>2</strong>.</p>
+                </div>
+
+                <div class="rule-block">
+                    <h4>🎲 Rolagens e Atributos</h4>
+                    <p><strong>Fórmula de Rolagem:</strong>
+                        <code>(Base + Pontos + Bônus de Treino)d6k(Base + Pontos)</code>
+                    </p>
+                    <p>Exemplo: Luta 3 + 1 Ponto + Treinado (+1D) = Sorteia 5 dados, mantém os 4 melhores.</p>
+                </div>
+
+                <div class="rule-block">
+                    <h4>🛡️ Defesa e Armadura</h4>
+                    <p><strong>Defesa (Dificuldade para acertar):</strong>
+                        <code>Agilidade + Atletismo + Percepção</code>
+                    </p>
+                    <p><strong>Armadura (Redução de Dano):</strong> <code>Nível de Treinamento x 3</code>. (Recruta=0,
+                        Treinado=3, Veterano=6, Elite=9).</p>
+                </div>
+
+                <div class="rule-block">
+                    <h4>💥 Dano (Poder)</h4>
+                    <p><strong>Cálculo:</strong> <code>(Poder Base + Pontos) x Multiplicador de Tamanho</code></p>
+                    <ul>
+                        <li>Pelotão (10): x1</li>
+                        <li>Unidade (1000): x2</li>
+                        <li>Batalhão (5000): x3</li>
+                        <li>Legião (10000): x4</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

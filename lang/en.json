@@ -1,0 +1,25 @@
+{
+    "GOT": {
+        "SheetName": "Ice and Fire Sheet",
+        "habilidades": {
+            "agilidade": "Agility",
+            "lidar_com_animais": "Animal Handling",
+            "atletismo": "Athletics",
+            "percepcao": "Perception",
+            "astucia": "Cunning",
+            "enganacao": "Deception",
+            "resistencia": "Endurance",
+            "luta": "Fighting",
+            "cura": "Healing",
+            "idioma": "Language",
+            "conhecimento": "Knowledge",
+            "pontaria": "Marksmanship",
+            "persuasao": "Persuasion",
+            "status": "Status",
+            "furtividade": "Stealth",
+            "sobrevivencia": "Survival",
+            "guerra": "Warfare",
+            "vontade": "Will"
+        }
+    }
+}

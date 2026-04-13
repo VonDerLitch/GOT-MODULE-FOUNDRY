@@ -1,0 +1,148 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64" />
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Nome do Item" /></h1>
+            <div class="grid grid-2col">
+                <div class="detail-field">
+                    <label>Tipo:</label>
+                    <select name="system.type">
+                        {{selectOptions itemTypes selected=system.type}}
+                    </select>
+                </div>
+                {{#if (eq system.type "arma")}}
+                <div class="detail-field">
+                    <label>Habilidade de Ataque:</label>
+                    <select name="system.habilidade_ataque">
+                        {{selectOptions config.habilidades selected=system.habilidade_ataque blank="Luta (Padrão)"}}
+                    </select>
+                </div>
+                <div class="detail-field">
+                    <label>Atributo de Dano:</label>
+                    <select name="system.atributo_dano">
+                        {{selectOptions config.habilidades selected=system.atributo_dano blank="Detecção Automática"}}
+                        <option value="nenhum">Nenhum</option>
+                    </select>
+                </div>
+                <div class="detail-field">
+                    <label>Dano Base:</label>
+                    <input type="number" name="system.dano" value="{{system.dano}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Dados de Bônus:</label>
+                    <input type="number" name="system.bonus_dice" value="{{system.bonus_dice}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Especialidade:</label>
+                    <input type="text" name="system.especialidade" value="{{system.especialidade}}"
+                        placeholder="Ex: Machados" />
+                </div>
+                <div class="detail-field full-width">
+                    <label>Propriedades:</label>
+                    <input type="text" name="system.propriedades" value="{{system.propriedades}}"
+                        placeholder="Ex: Cruel, Poderosa, Defensiva 1" />
+                </div>
+                <div class="detail-field">
+                    <label>Volume (Bulk):</label>
+                    <input type="number" name="system.bulk" value="{{system.bulk}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Usa Munição:</label>
+                    <input type="text" name="system.tipo_municao" value="{{system.tipo_municao}}"
+                        placeholder="Ex: flecha, virote" />
+                </div>
+                {{/if}}
+
+                {{#if (eq system.type "equipamento")}}
+                <div class="detail-field">
+                    <label>Quantidade:</label>
+                    <input type="number" name="system.quantidade" value="{{system.quantidade}}" />
+                </div>
+                <div class="detail-field">
+                    <label>É Munição?</label>
+                    <input type="checkbox" name="system.is_ammo" {{checked system.is_ammo}} />
+                </div>
+                {{#if system.is_ammo}}
+                <div class="detail-field">
+                    <label>Tipo de Munição:</label>
+                    <input type="text" name="system.tipo_municao" value="{{system.tipo_municao}}"
+                        placeholder="Ex: flecha" />
+                </div>
+                {{/if}}
+                {{/if}}
+
+                {{#if (eq system.type "armadura")}}
+                <div class="detail-field">
+                    <label>Proteção (AR):</label>
+                    <input type="number" name="system.ar" value="{{system.ar}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Penalidade (AP):</label>
+                    <input type="number" name="system.ap" value="{{system.ap}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Volume (Bulk):</label>
+                    <input type="number" name="system.bulk" value="{{system.bulk}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Em Uso:</label>
+                    <input type="checkbox" name="system.uso" {{checked system.uso}} />
+                </div>
+                {{/if}}
+
+                {{#if (eq system.type "escudo")}}
+                <div class="detail-field">
+                    <label>Bônus Defesa:</label>
+                    <input type="number" name="system.defesa_bonus" value="{{system.defesa_bonus}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Volume (Bulk):</label>
+                    <input type="number" name="system.bulk" value="{{system.bulk}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Em Uso:</label>
+                    <input type="checkbox" name="system.uso" {{checked system.uso}} />
+                </div>
+                {{/if}}
+
+                {{#if (or (eq system.type "qualidade") (eq system.type "defeito"))}}
+                <div class="modifiers-section">
+                    <div class="section-header">
+                        <label>Modificadores Automatizados</label>
+                        <a class="add-modifier" title="Adicionar Modificador"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="modifiers-list">
+                        {{#each system.modificadores as |mod index|}}
+                        <div class="modifier-row" data-index="{{index}}">
+                            <select name="system.modificadores.{{index}}.alvo">
+                                {{selectOptions ../config.habilidades selected=mod.alvo blank="Alvo..."}}
+                            </select>
+                            <select name="system.modificadores.{{index}}.especialidade">
+                                <option value="">Toda a Habilidade</option>
+                                {{#if mod.alvo}}
+                                {{selectOptions (lookup (lookup ../config.defaultData.habilidades mod.alvo)
+                                "especialidades") selected=mod.especialidade}}
+                                {{/if}}
+                            </select>
+                            <input type="number" name="system.modificadores.{{index}}.valor" value="{{mod.valor}}"
+                                placeholder="Val" title="Bônus/Penalidade (+1, -1)" />
+                            <a class="delete-modifier" title="Remover"><i class="fas fa-trash"></i></a>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </header>
+
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">Descrição</a>
+    </nav>
+
+    <section class="sheet-body">
+        <div class="tab" data-group="primary" data-tab="description">
+            {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+        </div>
+    </section>
+</form>

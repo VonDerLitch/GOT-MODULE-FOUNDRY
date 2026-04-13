@@ -1,0 +1,605 @@
+<form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+    <div class="header-fields">
+      <div class="header-row">
+        <h1 class="charname">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Nome" {{#if (not owner)}}readonly{{/if}} />
+        </h1>
+        <div class="sheet-type-container">
+          <select name="system.tipo_ficha" class="sheet-type-select" {{#if (not owner)}}disabled{{/if}}>
+            <option value="character" {{#if (eq system.tipo_ficha "character" )}}selected{{/if}}>Personagem</option>
+            <option value="unit" {{#if (eq system.tipo_ficha "unit" )}}selected{{/if}}>Unidade Militar</option>
+            <option value="feud" {{#if (eq system.tipo_ficha "feud" )}}selected{{/if}}>Feudo/Cidade</option>
+          </select>
+        </div>
+      </div>
+      <div class="header-details grid grid-3col">
+        <div class="detail-field">
+          <label>Casa:</label>
+          <input type="text" name="system.info.casa" value="{{system.info.casa}}" placeholder="Casa" />
+        </div>
+        <div class="detail-field">
+          <label>Idade:</label>
+          <input type="number" name="system.info.idade" value="{{system.info.idade}}" />
+        </div>
+        <div class="detail-field">
+          <label>Gênero:</label>
+          <input type="text" name="system.info.genero" value="{{system.info.genero}}" />
+        </div>
+        <div class="detail-field">
+          <label>Ouro/Moedas:</label>
+          <input type="number" name="system.info.ouro" value="{{system.info.ouro}}" />
+        </div>
+      </div>
+      <div class="header-details grid grid-2col">
+        <div class="detail-field">
+          <label>Pontos de Destino:</label>
+          <input type="number" name="system.info.pontos_destino" value="{{system.info.pontos_destino}}" {{#if (not
+            owner)}}readonly{{/if}} />
+        </div>
+        <div class="detail-field">
+          {{#if owner}}
+          <button type="button" class="reset-sheet" title="Resetar dados para o padrão GoT">
+            <i class="fas fa-redo"></i> Resetar Ficha
+          </button>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    {{#if (not limited)}}
+    <a class="item" data-tab="habilidades">Habilidades</a>
+    <a class="item" data-tab="resumo">Combate & Intriga</a>
+    <a class="item" data-tab="itens">Qualidades & Equipamento</a>
+    {{/if}}
+    <a class="item" data-tab="biografia">Biografia</a>
+    <a class="item" data-tab="linhagem">Linhagem</a>
+    {{#if (not limited)}}
+    <a class="item" data-tab="relacoes">Relacionamentos</a>
+    <a class="item" data-tab="dominios">Domínios & Tropas</a>
+    {{/if}}
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Dominios & Tropas Tab --}}
+    <div class="tab dominios" data-group="primary" data-tab="dominios">
+      <div class="controlled-grid grid grid-2col">
+        <div class="controlled-column">
+          <h3><i class="fas fa-fist-raised"></i> Tropas e Unidades</h3>
+          <div class="controlled-list">
+            {{#each controles.units as |actor|}}
+            <div class="controlled-item" data-id="{{actor.id}}">
+              <img src="{{actor.img}}" />
+              <div class="controlled-info">
+                <span class="actor-name">{{actor.name}}</span>
+              </div>
+              {{#if ../owner}}
+              <div class="controlled-controls">
+                <a class="controlled-remove" title="Remover Comando"><i class="fas fa-times"></i></a>
+              </div>
+              {{/if}}
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        <div class="controlled-column">
+          <h3><i class="fas fa-castle"></i> Domínios e Terras</h3>
+          <div class="controlled-list">
+            {{#each controles.feuds as |actor|}}
+            <div class="controlled-item" data-id="{{actor.id}}">
+              <img src="{{actor.img}}" />
+              <div class="controlled-info">
+                <span class="actor-name">{{actor.name}}</span>
+              </div>
+              {{#if ../owner}}
+              <div class="controlled-controls">
+                <a class="controlled-remove" title="Remover Comando"><i class="fas fa-times"></i></a>
+              </div>
+              {{/if}}
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <div class="drop-hint-full">Arraste Fichas de Unidade ou Feudo aqui para vincular</div>
+    </div>
+    <div class="tab linhagem" data-group="primary" data-tab="linhagem">
+      <div class="linhagem-header">
+        <button type="button" class="open-family-tree" title="Abrir Árvore da Casa">
+          <i class="fas fa-sitemap"></i> Abrir Árvore da Casa
+        </button>
+      </div>
+      <div class="lineage-grid">
+        {{!-- Top: Parents --}}
+        <div class="lineage-parents">
+          <div class="relative-slot" data-rel="pai">
+            <label>Pai</label>
+            {{#if familia.pai}}
+            <div class="relative-item" data-rel="pai" data-id="{{familia.pai.id}}">
+              <img src="{{familia.pai.img}}" title="{{familia.pai.name}}" />
+              <span>{{familia.pai.name}}</span>
+              <a class="relative-remove"><i class="fas fa-times"></i></a>
+            </div>
+            {{else}}
+            <div class="empty-slot">Arraste um Ator aqui</div>
+            {{/if}}
+          </div>
+          <div class="relative-slot" data-rel="mae">
+            <label>Mãe</label>
+            {{#if familia.mae}}
+            <div class="relative-item" data-rel="mae" data-id="{{familia.mae.id}}">
+              <img src="{{familia.mae.img}}" title="{{familia.mae.name}}" />
+              <span>{{familia.mae.name}}</span>
+              <a class="relative-remove"><i class="fas fa-times"></i></a>
+            </div>
+            {{else}}
+            <div class="empty-slot">Arraste um Ator aqui</div>
+            {{/if}}
+          </div>
+        </div>
+
+        {{!-- Middle: Spouse --}}
+        <div class="lineage-spouse">
+          <div class="relative-slot" data-rel="conjuge">
+            <label>Cônjuge</label>
+            {{#if familia.conjuge}}
+            <div class="relative-item" data-rel="conjuge" data-id="{{familia.conjuge.id}}">
+              <img src="{{familia.conjuge.img}}" title="{{familia.conjuge.name}}" />
+              <span>{{familia.conjuge.name}}</span>
+              <a class="relative-remove"><i class="fas fa-times"></i></a>
+            </div>
+            {{else}}
+            <div class="empty-slot">Arraste um Ator aqui</div>
+            {{/if}}
+          </div>
+        </div>
+
+        {{!-- Bottom: Siblings & Children --}}
+        <div class="lineage-extended">
+          <div class="relative-slot" data-rel="irmaos">
+            <label>Irmãos</label>
+            <div class="relative-list">
+              {{#each familia.irmaos as |rel|}}
+              <div class="relative-item" data-rel="irmaos" data-id="{{rel.id}}">
+                <img src="{{rel.img}}" title="{{rel.name}}" />
+                <span>{{rel.name}}</span>
+                <a class="relative-remove"><i class="fas fa-times"></i></a>
+              </div>
+              {{/each}}
+              <div class="empty-hint">Arraste aqui</div>
+            </div>
+          </div>
+          <div class="relative-slot" data-rel="filhos">
+            <label>Filhos</label>
+            <div class="relative-list">
+              {{#each familia.filhos as |rel|}}
+              <div class="relative-item" data-rel="filhos" data-id="{{rel.id}}">
+                <img src="{{rel.img}}" title="{{rel.name}}" />
+                <span>{{rel.name}}</span>
+                <a class="relative-remove"><i class="fas fa-times"></i></a>
+              </div>
+              {{/each}}
+              <div class="empty-hint">Arraste aqui</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- Relacionamentos Tab (Orbital) --}}
+    <div class="tab relacoes" data-group="primary" data-tab="relacoes">
+      <div class="orbital-wrapper">
+        <div class="orbital-container">
+
+          {{!-- Center Actor --}}
+          <div class="orbital-center">
+            <img src="{{actor.img}}" title="{{actor.name}}" />
+            <span class="center-name">{{actor.name}}</span>
+          </div>
+
+          {{!-- 12 Orbital Slots --}}
+          {{#each familia.slots as |slot|}}
+          <div class="relative-slot orbital-slot slot-{{slot.index}}" data-rel="relacao" data-index="{{slot.index}}">
+            {{#if slot.actor}}
+            <div class="relative-item relationship-{{slot.affinity.class}}" data-index="{{slot.index}}"
+              data-id="{{slot.actor.id}}">
+              <img src="{{slot.actor.img}}" title="{{slot.actor.name}}" />
+              <div class="relationship-info">
+                <span class="relative-name">{{slot.actor.name}}</span>
+                <span class="affinity-label">{{slot.affinity.label}}</span>
+              </div>
+
+              {{!-- Pin Toggle --}}
+              {{#if ../owner}}
+              <a class="pin-toggle" title="Ciclar Afinidade">
+                <i class="fas fa-sync-alt"></i>
+              </a>
+
+              {{!-- Remove --}}
+              <a class="relative-remove" title="Remover Relacionamento">
+                <i class="fas fa-times"></i>
+              </a>
+              {{/if}}
+            </div>
+            {{else}}
+            <div class="empty-orbital-slot">
+              <i class="fas fa-plus"></i>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    {{!-- Biografia Tab --}}
+    <div class="tab biografia" data-group="primary" data-tab="biografia">
+      <div class="bio-header" style="margin-bottom: 10px; border-bottom: 2px solid #8b0000; padding-bottom: 5px;">
+        <h3><i class="fas fa-feather-alt"></i> História e Biografia</h3>
+      </div>
+      <div class="bio-container"
+        style="background: #ffffff !important; color: #000000 !important; min-height: 450px; padding: 15px; border: 2px solid #d4af37; border-radius: 8px; position: relative; z-index: 5;">
+        {{editor system.biografia target="system.biografia" engine="prosemirror" button=false owner=owner
+        editable=editable}}
+      </div>
+    </div>
+
+    {{!-- Itens Tab --}}
+    <div class="tab itens" data-group="primary" data-tab="itens">
+      <div class="items-list">
+        {{!-- Armas --}}
+        <div class="item-group">
+          <div class="group-header">
+            <h3>Armas & Luta</h3>
+            {{#if owner}}
+            <a class="item-create" title="Criar Arma" data-type="arma"><i class="fas fa-plus"></i> Adicionar</a>
+            {{/if}}
+          </div>
+          {{#each armas as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name weapon-roll" title="Clique para Atacar" data-tooltip="{{item.displayTooltip}}">
+              <img src="{{item.img}}" width="24" height="24" />
+              <span>{{item.name}}</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Armaduras & Escudos --}}
+        <div class="item-group">
+          <div class="group-header">
+            <h3>Armaduras & Escudos</h3>
+            <a class="item-create" title="Criar Armadura" data-type="armadura"><i class="fas fa-plus"></i>
+              Armadura</a>
+            <a class="item-create" title="Criar Escudo" data-type="escudo"><i class="fas fa-plus"></i>
+              Escudo</a>
+          </div>
+          {{#each armaduras as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name">
+              <img src="{{item.img}}" width="24" height="24" />
+              <span>{{item.name}} (AR {{item.system.ar}} / AP {{item.system.ap}})</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <input type="checkbox" class="item-toggle-usage" title="Equipar/Desequipar" {{checked item.system.uso}} />
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+          {{#each escudos as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name">
+              <img src="{{item.img}}" width="24" height="24" />
+              <span>{{item.name}} (+{{item.system.defesa_bonus}} Defesa)</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <input type="checkbox" class="item-toggle-usage" title="Equipar/Desequipar" {{checked item.system.uso}} />
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Qualidades --}}
+        <div class="item-group">
+          <div class="group-header">
+            <h3>Qualidades & Benefícios</h3>
+            {{#if owner}}
+            <a class="item-create" title="Criar Qualidade" data-type="qualidade"><i class="fas fa-plus"></i>
+              Adicionar</a>
+            {{/if}}
+          </div>
+          {{#each qualidades as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name">
+              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+              <span>{{item.name}}</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Defeitos --}}
+        <div class="item-group">
+          <div class="group-header">
+            <h3>Defeitos & Desvantagens</h3>
+            {{#if owner}}
+            <a class="item-create" title="Criar Defeito" data-type="defeito"><i class="fas fa-plus"></i>
+              Adicionar</a>
+            {{/if}}
+          </div>
+          {{#each defeitos as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name">
+              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+              <span>{{item.name}}</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Equipamento --}}
+        <div class="item-group">
+          <div class="group-header">
+            <h3>Equipamento & Objetos</h3>
+            {{#if owner}}
+            <a class="item-create" title="Criar Equipamento" data-type="equipamento"><i class="fas fa-plus"></i>
+              Adicionar</a>
+            {{/if}}
+          </div>
+          {{#each equipamento as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name">
+              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+              <span>{{item.name}}</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    {{!-- Habilidades Tab --}}
+    <div class="tab habilidades" data-group="primary" data-tab="habilidades">
+      <div class="abilities-grid">
+        {{#each habilidadesList as |item|}}
+        <div class="ability-block">
+          <div class="ability-header">
+            <span class="ability-name rollable" data-label="{{item.label}}" data-roll="{{item.rollFormula}}"
+              data-ability="{{item.key}}">{{item.label}}</span>
+            <input type="number" name="system.habilidades.{{item.key}}.base" value="{{item.base}}" data-dtype="Number"
+              step="1" {{#if (not ../owner)}}readonly{{/if}} />
+          </div>
+          <div class="specialties-list">
+            {{#each item.especialidades as |spec|}}
+            <div class="specialty-item">
+              <label class="rollable" data-label="{{spec.key}}" data-roll="{{spec.rollFormula}}"
+                data-ability="{{../item.key}}">{{spec.key}}</label>
+              <input type="number" name="system.habilidades.{{item.key}}.especialidades.{{spec.key}}"
+                value="{{spec.value}}" data-dtype="Number" step="1" {{#if (not ../../owner)}}readonly{{/if}} />
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{else}}
+        <p class="empty-message">Nenhuma habilidade encontrada. Clique em "Resetar Ficha" acima para carregar os
+          dados
+          padrão.</p>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Resumo Tab --}}
+    <div class="tab resumo" data-group="primary" data-tab="resumo">
+      <div class="combat-intrigue-grid">
+        <div class="status-block">
+          <div class="status-header">
+            <h3>Combate</h3>
+            <button type="button" class="roll-initiative initiative-combat" title="Rolar Iniciativa de Combate"
+              data-type="combat">
+              <i class="fas fa-dice-d6"></i> Iniciativa
+            </button>
+          </div>
+          <div class="status-item health-block">
+            <div class="health-header"
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label data-tooltip="3 x Resistência">Saúde</label>
+
+              {{!-- Health Bar Visualization --}}
+              <div class="health-bar-container"
+                title="{{system.combate_intriga.saude.value}} / {{system.combate_intriga.saude.max}}">
+                <div class="health-bar-body">
+                  <div class="health-bar-fill" style="width: {{healthPct}}%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.saude.value"
+                value="{{system.combate_intriga.saude.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <span> / </span>
+              <input type="number" name="system.combate_intriga.saude.max" value="{{system.combate_intriga.saude.max}}"
+                readonly />
+            </div>
+          </div>
+
+          {{!-- Esforço Diário (SIFRP) --}}
+          <div class="status-item effort-block">
+            <div class="effort-header"
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label data-tooltip="Esforço Diário (Baseado na Resistência)"><i class="fas fa-bolt"
+                  style="color: #ffd700;"></i> Esforço</label>
+
+              {{!-- Battery Visualization --}}
+              <div class="battery-container"
+                title="{{system.combate_intriga.esforco.value}} / {{system.combate_intriga.esforco.max}}">
+                <div class="battery-body">
+                  <div class="battery-fill" style="width: {{effortPct}}%;"></div>
+                </div>
+                <div class="battery-cap"></div>
+              </div>
+            </div>
+
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.esforco.value"
+                value="{{system.combate_intriga.esforco.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <span> / </span>
+              <input type="number" name="system.combate_intriga.esforco.max"
+                value="{{system.combate_intriga.esforco.max}}" readonly />
+            </div>
+          </div>
+          <div class="effort-actions">
+            <button type="button" class="btn-toggle-esforco {{#if system.combate_intriga.esforco_ativo}}active{{/if}}"
+              title="Ativar/Desativar Concentração (Ignora Lesões)">
+              <i class="fas fa-brain"></i> {{#if
+              system.combate_intriga.esforco_ativo}}Concentrado{{else}}Concentrar{{/if}}
+            </button>
+            <button type="button"
+              class="btn-toggle-sacrificio {{#if system.combate_intriga.sacrificar_bonus}}active{{/if}}"
+              title="Ataque Poderoso: Sacrificar Dados Bônus por Dano (+1 por Dado)">
+              <i class="fas fa-sword"></i> {{#if system.combate_intriga.sacrificar_bonus}}Poderoso{{else}}Ataque
+              Poderoso{{/if}}
+            </button>
+            <button type="button" class="btn-gastar-esforco" title="Gastar 1 Esforço para Ação Extra">
+              <i class="fas fa-forward"></i> Ação Extra
+            </button>
+          </div>
+          <div class="status-item">
+            <label>Proteção (AR)</label>
+            <div class="resource-inputs">
+              <input type="number" value="{{totalAR}}" readonly />
+            </div>
+          </div>
+          <div class="status-item">
+            <label>Penalidade (AP)</label>
+            <div class="resource-inputs">
+              <input type="number" value="{{totalAP}}" readonly />
+            </div>
+          </div>
+          <div class="status-item">
+            <label>Movimento</label>
+            <div class="resource-inputs">
+              <input type="number" value="{{totalMove}}" readonly title="{{totalMove}} Jardas" />
+              <span> yd </span>
+              <span class="grid-conversion">({{moveSquares}} qd)</span>
+            </div>
+          </div>
+          <div class="status-item">
+            <label>Corrida</label>
+            <div class="resource-inputs">
+              <input type="number" value="{{sprintValue}}" readonly title="{{sprintValue}} Jardas" />
+              <span> yd </span>
+              <span class="grid-conversion">({{sprintSquares}} qd)</span>
+            </div>
+          </div>
+          <div class="status-item">
+            <label data-tooltip="Agilidade + Atletismo + Percepção">Defesa</label>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.defesa" value="{{system.combate_intriga.defesa}}"
+                readonly />
+            </div>
+          </div>
+          <div class="status-item">
+            <label>Ferimentos</label>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.ferimentos.value"
+                value="{{system.combate_intriga.ferimentos.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <span> / </span>
+              <input type="number" name="system.combate_intriga.ferimentos.max"
+                value="{{system.combate_intriga.ferimentos.max}}" />
+            </div>
+          </div>
+          <div class="status-item">
+            <label>Lesões</label>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.lesoes.value"
+                value="{{system.combate_intriga.lesoes.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <span> / </span>
+              <input type="number" name="system.combate_intriga.lesoes.max"
+                value="{{system.combate_intriga.lesoes.max}}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="status-block">
+          <div class="status-header">
+            <h3>Intriga</h3>
+            <button type="button" class="roll-initiative initiative-intrigue" title="Rolar Iniciativa de Intriga"
+              data-type="intrigue">
+              <i class="fas fa-dice-d6"></i> Iniciativa
+            </button>
+          </div>
+          <div class="status-item">
+            <label data-tooltip="Percepção + Astúcia + Status">Defesa</label>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.defesa_intriga"
+                value="{{system.combate_intriga.defesa_intriga}}" readonly />
+            </div>
+          </div>
+          <div class="status-item">
+            <label data-tooltip="Vontade x 3">Estresse (Compostura)</label>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.estresse.value"
+                value="{{system.combate_intriga.estresse.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <span> / </span>
+              <input type="number" name="system.combate_intriga.estresse.max"
+                value="{{system.combate_intriga.estresse.max}}" readonly />
+            </div>
+          </div>
+          <div class="status-item">
+            <label>Frustração (Penalidade)</label>
+            <div class="resource-inputs">
+              <input type="number" name="system.combate_intriga.frustracao.value"
+                value="{{system.combate_intriga.frustracao.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <span> / </span>
+              <input type="number" name="system.combate_intriga.frustracao.max"
+                value="{{system.combate_intriga.frustracao.max}}" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{!-- Footer Signature --}}
+  <footer class="sheet-footer">
+    <img src="worlds/gelo-and-fogo/house.png" class="signature-img" />
+    <p class="signature">Morke</p>
+    <p class="tagline">A espada de sangue e fogo</p>
+  </footer>
+</form>

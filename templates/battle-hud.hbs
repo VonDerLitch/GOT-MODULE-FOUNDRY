@@ -1,0 +1,195 @@
+<div class="got-hud got-battle-hud {{#if isFleeing}}unit-fleeing{{/if}}">
+    {{!-- 1. Unit Pillar (Portrait & Vitals Above) --}}
+    <div class="hud-pillar portrait-pillar">
+        <div class="hud-vitals-top">
+            {{!-- Health Bar --}}
+            <div class="hud-stat-group health" title="Saúde da Tropa (Se chegar a 0, a tropa foge)">
+                <div class="hud-stat-bar">
+                    <div class="hud-stat-fill" style="width: {{healthPct}}%;"></div>
+                </div>
+                <div class="hud-stat-controls">
+                    <i class="fas fa-minus btn-adjust" data-prop="system.militar.saude.value" data-delta="-1"></i>
+                    <span class="stat-value">{{healthValue}} / {{healthMax}}</span>
+                    <i class="fas fa-plus btn-adjust" data-prop="system.militar.saude.value" data-delta="1"></i>
+                </div>
+            </div>
+
+            {{!-- Discipline Bar --}}
+            <div class="hud-stat-group discipline" title="Disciplina da Tropa (Se chegar a 0, a tropa foge)">
+                <div class="hud-stat-bar">
+                    <div class="hud-stat-fill" style="width: {{disciplinePct}}%;"></div>
+                </div>
+                <div class="hud-stat-controls">
+                    <i class="fas fa-minus btn-adjust" data-prop="system.militar.moral" data-delta="-1"></i>
+                    <span class="stat-value">{{disciplineValue}} / {{disciplineMax}}</span>
+                    <i class="fas fa-plus btn-adjust" data-prop="system.militar.moral" data-delta="1"></i>
+                </div>
+            </div>
+
+            {{!-- Movement Bar (Squares) --}}
+            <div class="hud-stat-group movement-squares" title="Movimento Restante (Quadrados)">
+                <div class="hud-stat-bar">
+                    <div class="hud-stat-fill move-fill" style="width: {{movePct}}%; background: linear-gradient(90deg, #2e7d32, #4caf50);"></div>
+                </div>
+                <div class="hud-stat-controls">
+                    <i class="fas fa-undo btn-reset-move" title="Resetar Movimento" style="cursor:pointer; font-size: 0.8em; margin-right: 5px;"></i>
+                    <span class="stat-value">{{moveRemaining}} / {{moveBase}} qd</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-portrait-container">
+            <img class="hud-portrait-img" src="{{token.document.texture.src}}" />
+            {{#if isFleeing}}
+            <div class="fleeing-overlay"><i class="fas fa-running"></i> FUGINDO</div>
+            {{/if}}
+        </div>
+        <div class="hud-actor-name">{{actor.name}}</div>
+        <div class="unit-size-tag">{{system.militar.tamanho}} (x{{sizeMultiplier}})</div>
+    </div>
+
+    {{!-- 2. Navigation & Content --}}
+    <div class="hud-main-container">
+        <nav class="hud-tabs">
+            <a class="hud-tab-btn {{#if (eq activeTab 'ataque')}}active{{/if}}" data-tab="ataque">GUERRA</a>
+            <a class="hud-tab-btn {{#if (eq activeTab 'comando')}}active{{/if}}" data-tab="comando">COMANDO</a>
+            <a class="hud-tab-btn {{#if (eq activeTab 'manobras')}}active{{/if}}" data-tab="manobras">MANOBRAS</a>
+        </nav>
+
+        <div class="hud-content">
+            {{!-- ATAQUE TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'ataque')}}active{{/if}}" data-tab="ataque">
+                <div class="hud-category">
+                    <div class="category-header">ATAQUES DE TROPA</div>
+                    <div class="category-items">
+                        <div class="hud-box hud-unit-roll" data-stat="luta" data-label="Luta" title="Atacar com Luta (Soma Bônus de Tática)">
+                            <i class="box-icon fas fa-swords"></i>
+                            <div class="box-label">Luta (+{{tacticsBonus}}B)</div>
+                        </div>
+                        <div class="hud-box hud-unit-roll" data-stat="pontaria" data-label="Pontaria" title="Atacar com Pontaria">
+                            <i class="box-icon fas fa-bow-arrow"></i>
+                            <div class="box-label">Pontaria</div>
+                        </div>
+                        <div class="hud-box damage-display" title="Dano Base: {{powerBase}} x Multiplicador: {{sizeMultiplier}}">
+                            <div class="damage-total">{{unitDamage}}</div>
+                            <div class="box-label">Dano Total</div>
+                        </div>
+                    </div>
+                </div>
+
+                {{!-- TARGET INFO (Auto-Calculation) --}}
+                {{#if target}}
+                <div class="hud-category target-category">
+                    <div class="category-header">ALVO: {{target.name}}</div>
+                    <div class="category-items">
+                        <div class="hud-box target-box">
+                            <img src="{{target.img}}" class="target-img" />
+                            <div class="target-stats">
+                                <span>Defesa: {{target.defense}}</span>
+                                <span>Armadura: {{target.armor}}</span>
+                            </div>
+                        </div>
+                        <div class="hud-box effective-damage-box">
+                            <div class="damage-val">{{target.effectiveDamage}}</div>
+                            <div class="box-label">Dano Real</div>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+
+                <div class="hud-category">
+                    <div class="category-header">ESTADO DA TROPA</div>
+                    <div class="category-items">
+                        <div class="hud-box recovery-btn {{#unless isFleeing}}disabled{{/unless}}" title="Gasta 1 Disciplina + Teste de Guerra (Comando) para recuperar a tropa">
+                            <i class="box-icon fas fa-flag"></i>
+                            <div class="box-label">Reagrupar</div>
+                        </div>
+                        <div class="hud-box status-info">
+                            <div class="info-val">{{system.militar.armadura}}</div>
+                            <div class="box-label">Armadura</div>
+                        </div>
+                        <div class="hud-box status-info">
+                            <div class="info-val">{{unitDefense}}</div>
+                            <div class="box-label">Defesa</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{!-- COMANDO TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'comando')}}active{{/if}}" data-tab="comando">
+                <div class="hud-category">
+                    <div class="category-header">LIDERANÇA & ORÇAMENTO</div>
+                    <div class="command-summary">
+                        <div class="leaders-info">
+                            <div class="leader-slot">
+                                <label>Comandante</label>
+                                <span>{{#if comandante}}{{comandante.name}} (Guerra {{comandante.warfare}}){{else}}Nenhum{{/if}}</span>
+                            </div>
+                            <div class="leader-slot">
+                                <label>Sub-Comandante</label>
+                                <span>{{#if subcomandante}}{{subcomandante.name}}{{else}}Nenhum{{/if}}</span>
+                            </div>
+                        </div>
+                        <div class="budget-display">
+                            <div class="budget-val">{{points.total}}</div>
+                            <div class="box-label">Pontos Disponíveis</div>
+                        </div>
+                        {{#if hasCommandPenalty}}
+                        <div class="command-warning">
+                            <i class="fas fa-exclamation-triangle"></i> PENALIDADE: GUERRA INSUFICIENTE
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            {{!-- MANOBRAS TAB --}}
+            <div class="hud-tab-pane {{#if (eq activeTab 'manobras')}}active{{/if}}" data-tab="manobras">
+                <div class="hud-category">
+                    <div class="category-header">MANOBRAS (TROPA & LÍDERES)</div>
+                    <div class="category-items maneuvers-scroll">
+                        {{#each dynamicManeuvers as |m|}}
+                        <div class="hud-box hud-maneuver {{#if m.met}}met{{else}}fail{{/if}} {{#if m.active}}active-stance{{/if}}" 
+                             data-name="{{m.name}}" 
+                             data-specialty="{{m.specialty}}" 
+                             data-req="{{m.req}}" 
+                             data-bonus="{{m.bonus}}" 
+                             data-desc="{{m.desc}}"
+                             data-is-stance="{{#if m.isStance}}true{{else}}false{{/if}}"
+                             title="{{m.desc}}">
+                            <div class="maneuver-req">{{m.specialty}} {{m.req}}</div>
+                            <div class="box-label">{{m.name}}</div>
+                            <div class="met-status">{{#if m.active}}<i class="fas fa-toggle-on"></i>{{else}}{{#if m.met}}<i class="fas fa-check"></i>{{else}}<i class="fas fa-times"></i>{{/if}}{{/if}}</div>
+                        </div>
+                        {{/each}}
+                        
+                        {{#each customManeuvers as |m|}}
+                        <div class="hud-box hud-maneuver {{#if m.met}}met{{else}}fail{{/if}}" 
+                             data-name="{{m.name}}" 
+                             data-specialty="{{m.specialty}}" 
+                             data-req="{{m.req}}" 
+                             data-bonus="{{m.bonus}}" 
+                             data-desc="{{m.desc}}"
+                             title="{{m.desc}}">
+                            <div class="maneuver-req">{{m.specialty}} {{m.req}}</div>
+                            <div class="box-label">{{m.name}}</div>
+                            <div class="met-status">{{#if m.met}}<i class="fas fa-check"></i>{{else}}<i class="fas fa-times"></i>{{/if}}</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{!-- 3. End Turn Pillar --}}
+    {{#if isCombat}}
+    <div class="hud-pillar end-turn-pillar">
+        <div class="hud-end-turn-btn btn-end-turn pulse-gold">
+            <i class="fas fa-hourglass-end"></i>
+            <div class="btn-text">Fim Turno</div>
+        </div>
+    </div>
+    {{/if}}
+</div>

@@ -1,0 +1,46 @@
+{
+  "id": "got-character-sheet",
+  "title": "Game of Thrones Character Sheet",
+  "description": "Uma ficha personalizada e temática para crônicas de Gelo e Fogo.",
+  "authors": [
+    {
+      "name": "Antigravity",
+      "discord": ""
+    }
+  ],
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "scripts": [
+    "scripts/family-tree-app.js",
+    "scripts/got-sheet.js",
+    "scripts/item-sheet.js",
+    "scripts/got-init-items.js"
+  ],
+  "styles": [
+    "css/got-style.css",
+    "css/got-hud.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "worldbuilding",
+        "type": "system"
+      }
+    ]
+  }
+}
