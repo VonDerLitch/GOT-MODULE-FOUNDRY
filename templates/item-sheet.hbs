@@ -105,7 +105,34 @@
                 </div>
                 {{/if}}
 
-                {{#if (or (eq system.type "qualidade") (eq system.type "defeito"))}}
+                {{#if (eq system.type "montaria")}}
+                <div class="detail-field">
+                    <label>Movimento:</label>
+                    <input type="number" name="system.movimento" value="{{system.movimento}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Saúde (Vigor):</label>
+                    <div class="stat-inputs">
+                        <input type="number" name="system.saude.value" value="{{system.saude.value}}" />
+                        <span>/</span>
+                        <input type="number" name="system.saude.max" value="{{system.saude.max}}" />
+                    </div>
+                </div>
+                <div class="detail-field">
+                    <label>Bônus Defesa Combat:</label>
+                    <input type="number" name="system.bonus_defesa" value="{{system.bonus_defesa}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Dano Pisotear:</label>
+                    <input type="number" name="system.dano_pisotear" value="{{system.dano_pisotear}}" />
+                </div>
+                <div class="detail-field">
+                    <label>Montado:</label>
+                    <input type="checkbox" name="system.uso" {{checked system.uso}} />
+                </div>
+                {{/if}}
+
+                 {{#if (or (eq system.type "qualidade") (eq system.type "defeito"))}}
                 <div class="modifiers-section">
                     <div class="section-header">
                         <label>Modificadores Automatizados</label>
@@ -120,7 +147,7 @@
                             <select name="system.modificadores.{{index}}.especialidade">
                                 <option value="">Toda a Habilidade</option>
                                 {{#if mod.alvo}}
-                                {{selectOptions (lookup (lookup ../config.defaultData.habilidades mod.alvo)
+                                {{selectOptions (lookup (lookup ../specialtyLabels mod.alvo)
                                 "especialidades") selected=mod.especialidade}}
                                 {{/if}}
                             </select>

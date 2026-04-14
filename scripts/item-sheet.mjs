@@ -16,11 +16,22 @@ class GOTItemSheet extends ItemSheet {
     }
 
     /** @override */
-    getData() {
-        const context = super.getData();
+    async getData() {
+        const context = await super.getData();
         const itemData = context.item;
         context.system = itemData.system;
         context.config = CONFIG.GOT;
+
+        // Structured data for V12 selectOptions helper
+        context.itemTypes = {
+            "qualidade": "Qualidade/Benefício",
+            "defeito": "Defeito/Desvantagem",
+            "equipamento": "Equipamento",
+            "arma": "Arma",
+            "armadura": "Armadura",
+            "escudo": "Escudo",
+            "montaria": "Montaria/Cavalo"
+        };
 
         return context;
     }

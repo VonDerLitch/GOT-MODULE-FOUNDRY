@@ -1485,10 +1485,13 @@
 
 .got-chat-card {
   font-family: 'Inter', sans-serif;
-  background: url('../../../worlds/gelo-and-fogo/parchment.png');
+  background-color: #f5e6c8;
+  background-image: url('../../../worlds/gelo-and-fogo/parchment.png');
+  background-size: cover;
   border: 2px solid #8b0000;
   border-radius: 5px;
   padding: 10px;
+  color: #1a1a1a;
 }
 
 .got-chat-card .card-header {
@@ -1516,7 +1519,7 @@
 .got-chat-card .card-content {
   font-size: 0.9em !important;
   line-height: 1.4 !important;
-  color: #333 !important;
+  color: #1a1a1a !important;
 }
 
 /* Dashboard Status Colors */

@@ -234,4 +234,47 @@ Hooks.once('ready', async function () {
     } else {
         console.log("GOT | Armas, Qualidades e Armaduras já existem. Para atualizar, delete os compêndios 'world.*' e reinicie o Foundry.");
     }
+
+    // MOUNTS COMPENDIUM
+    const mountPackLabel = "Montarias (Gelo e Fogo)";
+    const mountPackName = "got-montarias";
+    let mountPack = game.packs.get(`world.${mountPackName}`);
+
+    if (!mountPack) {
+        ui.notifications.info("Criando Compêndio de Montarias...");
+        mountPack = await CompendiumCollection.createCompendium({
+            type: "Item",
+            label: mountPackLabel,
+            name: mountPackName,
+            package: "world"
+        });
+
+        const mounts = [
+            { name: "Destrier (C. de Guerra)", desc: "Um cavalo grande e treinado para combate intenso. Oferece proteção adicional.", mov: 6, vigor: 12, def: 1, damage: 3, img: "icons/creatures/mammals/horse-gaits-heavy-gray.webp" },
+            { name: "Courser (Corcel)", desc: "Rápido e forte, ideal para cargas de cavalaria.", mov: 7, vigor: 9, def: 1, damage: 2, img: "icons/creatures/mammals/horse-gaits-canter-light-brown.webp" },
+            { name: "Palafrém", desc: "Um cavalo elegante e confortável para longas viagens.", mov: 5, vigor: 6, def: 0, damage: 1, img: "icons/creatures/mammals/horse-gaits-walk-white.webp" },
+            { name: "Rocinante", desc: "Um cavalo de trabalho confiável e resistente.", mov: 5, vigor: 9, def: 0, damage: 2, img: "icons/creatures/mammals/horse-gaits-walk-brown.webp" },
+            { name: "Pônei", desc: "Pequeno e robusto, comum no Norte e entre o povo comum.", mov: 4, vigor: 6, def: 0, damage: 1, img: "icons/creatures/mammals/horse-standing-brown.webp" }
+        ];
+
+        const mountData = mounts.map(m => {
+            return {
+                name: m.name,
+                type: "item",
+                system: {
+                    type: "montaria",
+                    description: `<p>${m.desc}</p>`,
+                    movimento: m.mov,
+                    saude: { value: m.vigor, max: m.vigor },
+                    bonus_defesa: m.def,
+                    dano_pisotear: m.damage,
+                    uso: false
+                },
+                img: m.img
+            };
+        });
+
+        await Item.createDocuments(mountData, { pack: `world.${mountPackName}` });
+        ui.notifications.info("Compêndio de Montarias criado com sucesso!");
+    }
 });

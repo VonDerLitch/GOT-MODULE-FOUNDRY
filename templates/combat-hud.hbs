@@ -31,6 +31,25 @@
                         data-delta="1"></i>
                 </div>
             </div>
+            
+            {{#if hasMount}}
+            <div class="hud-stat-group mount-health" title="Saúde da Montaria">
+                <div class="hud-stat-bar" style="border-color: #8b4513;">
+                    <div class="hud-stat-fill" style="width: {{mountHealthPct}}%; background: linear-gradient(90deg, #d2691e, #ff8c00);"></div>
+                </div>
+                <div class="hud-stat-controls">
+                    <i class="fas fa-minus btn-adjust"
+                        data-prop="items.{{activeMount.id}}.system.saude.value"
+                        data-delta="-1"></i>
+                    <i class="fas fa-horse" style="font-size: 0.7em; color: #d4af37; margin: 0 5px;"></i>
+                    <span class="stat-value">{{activeMount.system.saude.value}}</span>
+                    <i class="fas fa-plus btn-adjust"
+                        data-prop="items.{{activeMount.id}}.system.saude.value"
+                        data-delta="1"></i>
+                </div>
+            </div>
+            {{/if}}
+
             <div class="hud-stat-group movement">
                 <div class="hud-stat-bar" title="Movimento: {{moveSquaresRemaining}} / {{moveSquaresTotal}} qd">
                     <div class="hud-stat-fill" style="width: {{movePct}}%;"></div>
@@ -75,6 +94,20 @@
                         {{/each}}
                     </div>
                 </div>
+                
+                {{#if hasMount}}
+                <div class="hud-category">
+                    <div class="category-header">COMBATE MONTADO</div>
+                    <div class="category-items">
+                        {{#each mountedActions as |m|}}
+                        <div class="hud-box hud-maneuver {{#if m.isActive}}active{{/if}}" data-id="{{m.id}}" data-name="{{m.name}}" title="{{m.name}}">
+                            <i class="box-icon {{m.icon}}"></i>
+                            <div class="box-label">{{m.name}}</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
 
                 <div class="hud-category">
                     <div class="category-header">AUXÍLIO TÁTICO</div>
@@ -114,7 +147,7 @@
                     <div class="category-header">MANOBRAS AVANÇADAS</div>
                     <div class="category-items maneuvers-scroll">
                         {{#each maneuvers as |m|}}
-                        <div class="hud-box hud-maneuver" data-id="{{m.id}}" data-name="{{m.name}}" title="{{m.name}}">
+                        <div class="hud-box hud-maneuver {{#if m.isActive}}active{{/if}}" data-id="{{m.id}}" data-name="{{m.name}}" title="{{m.name}}">
                             <i class="box-icon {{m.icon}}"></i>
                             <div class="box-label">{{m.name}}</div>
                         </div>

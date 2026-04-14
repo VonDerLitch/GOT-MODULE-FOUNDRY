@@ -16,11 +16,28 @@ class GOTItemSheet extends ItemSheet {
     }
 
     /** @override */
-    getData() {
-        const context = super.getData();
+    async getData() {
+        const context = await super.getData();
         const itemData = context.item;
         context.system = itemData.system;
         context.config = CONFIG.GOT;
+
+        // Build specialty labels map for modifier dropdowns
+        // The defaultData has {key: 0} but we need {key: "Label"} for selectOptions
+        if (CONFIG.GOT?.defaultData?.habilidades) {
+            const specLabels = {};
+            for (const [habKey, habData] of Object.entries(CONFIG.GOT.defaultData.habilidades)) {
+                if (habData.especialidades) {
+                    const labeled = {};
+                    for (const specKey of Object.keys(habData.especialidades)) {
+                        // Convert snake_case to Title Case
+                        labeled[specKey] = specKey.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    }
+                    specLabels[habKey] = { especialidades: labeled };
+                }
+            }
+            context.specialtyLabels = specLabels;
+        }
 
         // Structured data for V12 selectOptions helper
         context.itemTypes = {
@@ -29,7 +46,8 @@ class GOTItemSheet extends ItemSheet {
             "equipamento": "Equipamento",
             "arma": "Arma",
             "armadura": "Armadura",
-            "escudo": "Escudo"
+            "escudo": "Escudo",
+            "montaria": "Montaria/Cavalo"
         };
 
         return context;

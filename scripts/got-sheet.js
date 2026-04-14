@@ -611,11 +611,12 @@ class GOTActorSheet extends ActorSheet {
 
         const modifiers = {};
         const specModifiers = {};
-        const items = { qualidades: [], defeitos: [], equipamento: [], armas: [], armaduras: [], escudos: [] };
+        const items = { qualidades: [], defeitos: [], equipamento: [], armas: [], armaduras: [], escudos: [], montarias: [] };
         let totalAR = 0;
         let totalAP = 0;
         let totalBulk = 0;
         let totalShieldBonus = 0;
+        let activeMount = null;
 
         for (let i of this.actor.items) {
             const item = i.toObject(false);
@@ -714,16 +715,46 @@ class GOTActorSheet extends ActorSheet {
                 }
                 items.escudos.push(i);
             }
+            else if (item.system.type === 'montaria') {
+                if (item.system.uso) {
+                    activeMount = i;
+                }
+                items.montarias.push(i);
+            }
             else {
                 items.equipamento.push(i);
             }
         }
 
-        context.totalMove = Math.max(1, 4 - totalBulk);
+        context.totalMove = activeMount ? Number(activeMount.system.movimento || 4) : Math.max(1, 4 - totalBulk);
         context.sprintValue = context.totalMove * 4;
 
         context.moveSquares = Math.floor((context.totalMove * 0.91) / 1.5);
         context.sprintSquares = Math.floor((context.sprintValue * 0.91) / 1.5);
+        
+        if (activeMount) {
+            context.activeMount = activeMount;
+            context.mountHealthPct = Math.min(100, Math.max(0, (activeMount.system.saude.value / activeMount.system.saude.max) * 100));
+            totalShieldBonus += Number(activeMount.system.bonus_defesa || 0);
+            
+            // Inject Trample Attack
+            const trampleAttack = {
+                id: "trample",
+                name: "Pisotear",
+                img: activeMount.img,
+                system: {
+                    type: "arma",
+                    dano: Number(activeMount.system.dano_pisotear || 2),
+                    bonus_dice: 0,
+                    especialidade: "Montar",
+                    habilidade_ataque: "lidar_com_animais",
+                    atributo_dano: "nenhum",
+                    description: "Manobra de montaria: Atropelar o alvo com os cascos."
+                },
+                displayTooltip: "(Lidar com Animais)d6kh[Lidar com Animais] | Dano: Base"
+            };
+            items.armas.push(trampleAttack);
+        }
 
         if (!context.system.info.ouro && context.system.info.ouro !== 0) {
             context.system.info.ouro = 0;
@@ -1154,7 +1185,8 @@ class GOTActorSheet extends ActorSheet {
     async _onItemCreate(event) {
         event.preventDefault();
         const type = event.currentTarget.dataset.type;
-        const itemData = { name: `Novo(a) ${type}`, type: "item", system: { type: type } };
+        const img = type === "montaria" ? "icons/creatures/mammals/horse-gaits-heavy-gray.webp" : "icons/svg/item-bag.svg";
+        const itemData = { name: `Novo(a) ${type}`, type: "item", img: img, system: { type: type } };
         return await this.actor.createEmbeddedDocuments("Item", [itemData]);
     }
 
@@ -1244,7 +1276,36 @@ class GOTActorSheet extends ActorSheet {
         }
 
         const attrVal = attrKey === "nenhum" ? 0 : (this.actor.system.habilidades[attrKey]?.base || 0);
-        const damage = (system.dano || 0) + attrVal + powerAttackDmgBonus;
+
+        // Mounted & Charge Logic
+        const mount = this.actor.items?.find(i => i.system?.type === "montaria" && i.system?.uso === true);
+        const isMounted = !!mount;
+        const propsText = (system.propriedades || "").toLowerCase() + " " + (system.description || "").toLowerCase();
+        const isMountedWeapon = propsText.includes("montada") || propsText.includes("mounted");
+        
+        let mountPoolPenalty = 0;
+        let mountBonusDice = 0;
+        let mountDmgBonus = 0;
+        let mountFlavorMsg = "";
+
+        if (isMountedWeapon && !isMounted) {
+            mountPoolPenalty = 2;
+            mountFlavorMsg += `<br><span style="color:red">Penalidade (Arma Montada a pé): -2D</span>`;
+        }
+
+        if (isMounted && abilityKey === "luta") {
+            mountBonusDice = 1;
+            mountFlavorMsg += `<br><span style="color:blue">Vantagem de Altura: +1B</span>`;
+        }
+
+        const isCharging = this.actor.getFlag("got-character-sheet", "charging");
+        if (isCharging) {
+            mountDmgBonus = 2;
+            mountFlavorMsg += `<br><b>Bônus de Carga:</b> +2 Dano`;
+            await this.actor.setFlag("got-character-sheet", "charging", false);
+        }
+
+        const damage = (system.dano || 0) + attrVal + powerAttackDmgBonus + mountDmgBonus;
 
         let totalAP = 0;
         this.actor.items.forEach(i => {
@@ -1261,9 +1322,9 @@ class GOTActorSheet extends ActorSheet {
             effectiveWounds -= 1;
         }
 
-        const totalBonusDice = (system.bonus_dice || 0) + specBonus;
-        const totalPoolCount = Math.max(1, ability + totalBonusDice - effectiveWounds);
-        let rollFormula = `${totalPoolCount}d6kh${ability}`;
+        const totalBonusDice = (system.bonus_dice || 0) + specBonus + mountBonusDice;
+        const totalPoolCount = Math.max(1, ability + totalBonusDice - effectiveWounds - mountPoolPenalty);
+        let rollFormula = `${totalPoolCount}d6kh${ability - mountPoolPenalty}`;
         if (injuries > 0) rollFormula += ` - ${injuries}`;
         if (attrKey === "agilidade" && totalAP !== 0) {
             rollFormula += ` ${totalAP > 0 ? '+' : ''}${totalAP}`;
@@ -1336,6 +1397,9 @@ class GOTActorSheet extends ActorSheet {
         }
         if (reminders.length > 0) {
             flavor += `<br><small style="color:#666;">(Lembrete: ${reminders.join(", ")})</small>`;
+        }
+        if (mountFlavorMsg) {
+            flavor += mountFlavorMsg;
         }
 
         const combat = this._calculateCombatResult(roll.total, "combat");
@@ -1429,6 +1493,9 @@ class GOTActorSheet extends ActorSheet {
                         </button>
                         <button class="apply-wound-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(47, 79, 79, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
                             <i class="fas fa-skull"></i> Receber Lesão (0 Dano)
+                        </button>
+                        <button class="apply-mount-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(139, 69, 19, 0.8); color: white; border: 1px solid #d2691e; border-radius: 4px; cursor: pointer; padding: 4px;">
+                            <i class="fas fa-horse"></i> Aplicar Dano à Montaria (${finalDmg})
                         </button>
                     </div>`;
                 }
@@ -2352,6 +2419,8 @@ class GOTCombatHUD extends Application {
 
         // Safety guards for SIFRP data structure
         let health, effort;
+        let activeMount = null;
+        let mountHealthPct = 0;
         if (isUnit) {
             const m = system.militar || {};
 
@@ -2376,6 +2445,10 @@ class GOTCombatHUD extends Application {
         } else {
             health = system?.combate_intriga?.saude || { value: 0, max: 0 };
             effort = system?.combate_intriga?.esforco || { value: 0, max: 0 };
+            
+            // Explicitly Clear Mount Data for Non-Unit characters before detection
+            activeMount = null;
+            mountHealthPct = 0;
         }
 
         const healthPct = health.max > 0 ? Math.min(100, (health.value / health.max) * 100) : 0;
@@ -2384,6 +2457,7 @@ class GOTCombatHUD extends Application {
         // Movement Data (Energy Bar)
         let moveBase = Number(system.combate_intriga?.movimento || 0);
 
+        // Character fallback: calculate movement from bulk if not unit
         // Character fallback: calculate movement from bulk if not unit
         if (!isUnit) {
             let totalBulk = 0;
@@ -2397,6 +2471,18 @@ class GOTCombatHUD extends Application {
                 }
             });
             moveBase = Math.max(1, 4 - totalBulk);
+
+            // Mount logic for Characters
+            const mount = actor.items?.find(i => i.system?.type === "montaria" && i.system?.uso === true);
+            if (mount && mount.system) {
+                // Parse movement - ensure it's at least 4
+                moveBase = Number(mount.system.movimento || 4);
+                activeMount = mount;
+                mountHealthPct = Math.min(100, Math.max(0, (mount.system.saude.value / mount.system.saude.max) * 100));
+            } else {
+                activeMount = null;
+                mountHealthPct = 0;
+            }
         } else {
             // Unit movement is directly squares or base
             moveBase = Number(system.militar?.movimento || 1);
@@ -2443,13 +2529,14 @@ class GOTCombatHUD extends Application {
         if (isUnit) {
             moveSquaresTotal = moveBase; // 1:1 for Units
         } else {
-            const moveSquaresBase = Math.floor((moveBase * 0.91) / 1.5);
-            const moveSquaresSprint = Math.floor(((moveBase * 4) * 0.91) / 1.5);
+            // SIFRP: 1 Square = 1.5 meters.
+            const moveSquaresBase = Math.round(moveBase / 1.5);
+            const moveSquaresSprint = Math.round((moveBase * 4) / 1.5);
             moveSquaresTotal = isSprinting ? moveSquaresSprint : moveSquaresBase;
         }
 
         const moveSquaresRemainingNum = Math.max(0, (moveSquaresTotal - distanceMovedSquares));
-        const moveSquaresRemaining = moveSquaresRemainingNum.toFixed(1);
+        const moveSquaresRemaining = Math.max(0, moveSquaresRemainingNum).toFixed(1);
         const movePct = moveSquaresTotal > 0 ? Math.min(100, (moveSquaresRemainingNum / moveSquaresTotal) * 100) : 0;
 
         console.log(`GOT HUD | Movement Debug: Total=${moveSquaresTotal}, Moved=${distanceMovedSquares.toFixed(2)}, Remaining=${moveSquaresRemainingNum.toFixed(2)}, Pct=${movePct}%`);
@@ -2471,10 +2558,15 @@ class GOTCombatHUD extends Application {
             { id: "passar", name: "Passar", icon: "fas fa-hourglass-half", type: "maior" },
             { id: "puxar_cavaleiro", name: "Puxar Cavaleiro", icon: "fas fa-user-injured", type: "Luta", typeAction: "maior", ability: "atletismo", spec: "forca" },
             { id: "recuperar_folego", name: "Recuperar Folego", icon: "fas fa-heartbeat", type: "Vigor", typeAction: "maior", ability: "vigor" },
-            { id: "atq_dividido", name: "Atq. Dividido", icon: "fas fa-share-alt", type: "maior" },
-            { id: "atq_duas_armas", name: "Atq. 2 Armas", icon: "fas fa-sword", type: "maior" },
-            { id: "atq_montado", name: "Atq. Montado", icon: "fas fa-horse-head", type: "maior", ability: "luta" }
+            { id: "atq_duas_armas", name: "Atq. 2 Armas", icon: "fas fa-sword", type: "maior" }
         ];
+
+        let mountedActions = [];
+        if (activeMount) {
+            mountedActions.push({ id: "atq_montado", name: "Atq. Montado", icon: "fas fa-horse-head", type: "maior", ability: "luta" });
+            mountedActions.push({ id: "pisotear", name: "Pisotear", icon: "fas fa-paw", type: "maior", ability: "lidar_com_animais", spec: "montar" });
+            mountedActions.push({ id: "carga_montada", name: "Carga Montada", icon: "fas fa-horse-head", type: "maior", ability: "luta", isActive: !!actor.getFlag("got-character-sheet", "charging") });
+        }
 
         // Items and Info - Correcting type filter for Qualities
         const qualities = actor.items?.filter(i => i.system?.type === "qualidade") || [];
@@ -2499,6 +2591,7 @@ class GOTCombatHUD extends Application {
             effortValue: effort.value,
             attacks,
             maneuvers,
+            mountedActions,
             qualities,
             destinyCurrent,
             destinyMax,
@@ -2507,7 +2600,11 @@ class GOTCombatHUD extends Application {
             moveSquaresTotal,
             moveSquaresRemaining,
             movePct,
-            activeTab: this.activeTab
+            activeTab: this.activeTab,
+            activeMount: activeMount,
+            hasMount: !!activeMount,
+            mountHealthPct: mountHealthPct,
+            isCharging: !!actor.getFlag("got-character-sheet", "charging")
         };
     }
 
@@ -2559,49 +2656,124 @@ class GOTCombatHUD extends Application {
         });
 
         html.find('.hud-maneuver').click(async ev => {
-            const id = ev.currentTarget.dataset.id;
-            const name = ev.currentTarget.dataset.name.toUpperCase();
+            const data = ev.currentTarget.dataset;
             const actor = this.activeToken.actor;
+            if (!actor) return;
+            
+            const actionId = (data.id || "").toLowerCase().trim();
+            const actionName = (data.name || "").toLowerCase().trim();
 
+            // 1. ESPECIAL: CARGA MONTADA (Toggle)
+            if (actionId.includes("carga_montada") || actionName.includes("carga montada")) {
+                const current = actor.getFlag("got-character-sheet", "charging") || false;
+                await actor.setFlag("got-character-sheet", "charging", !current);
+                if (!current) {
+                    ui.notifications.info(`${actor.name} está preparando uma Carga Montada (+2 Dano no próximo ataque)!`);
+                }
+                this.render();
+                return;
+            }
+
+            // 2. ESPECIAL: PISOTEAR (Rolo de Ataque)
+            if (actionId === "pisotear" || actionName.includes("pisotear")) {
+                const mount = actor.items?.find(i => i.system?.type === "montaria" && i.system?.uso === true);
+                if (!mount) return ui.notifications.warn("Você não tem uma montaria ativa!");
+
+                const ability = actor.system.habilidades?.lidar_com_animais?.base || 2;
+                let specBonus = 0;
+                const specs = actor.system.habilidades?.lidar_com_animais?.especialidades || {};
+                
+                // Normalization for specializations
+                for (let [k, v] of Object.entries(specs)) {
+                    if (k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes("montar")) {
+                        specBonus = v;
+                        break;
+                    }
+                }
+                
+                const roll = new Roll(`${ability + specBonus}d6kh${ability}`);
+                await roll.evaluate();
+                
+                const dmgValue = mount.system?.ataques?.pisotear?.dano || 2;
+                const attrVal = actor.system.habilidades?.atletismo?.base || 2;
+
+                let content = `
+                    <div class="got-hud-card weapon-card">
+                        <header class="card-header">
+                            <img src="${mount.img}" title="${mount.name}"/>
+                            <h3 style="color:#ffd700;">Pisotear (${mount.name})</h3>
+                        </header>
+                        <div class="card-content">
+                            <p><b>Teste de Lidar com Animais (Montar):</b> ${roll.total}</p>
+                            <p><b>Dano:</b> ${dmgValue + attrVal}</p>
+                            <hr>
+                            <small style="font-style:italic; color:#ccc;">Alvo deve ser bem-sucedido num teste de Agilidade (Acrobacia) para não ficar Caído.</small>
+                        </div>
+                    </div>`;
+
+                ChatMessage.create({
+                    user: game.user.id,
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    content: content,
+                    rolls: [roll],
+                    type: CONST.CHAT_MESSAGE_TYPES.ROLL
+                });
+                return;
+            }
+
+            // 3. ESPECIAL: ATAQUE MONTADO (Shortcut)
+            if (actionId === "atq_montado" || actionName.includes("ataque montado")) {
+                const weapons = actor.items.filter(i => i.system?.type === "arma");
+                if (weapons.length === 1) {
+                    const sheet = (actor.sheet && actor.sheet instanceof GOTActorSheet) ? actor.sheet : new GOTActorSheet(actor);
+                    sheet.rollWeapon(weapons[0].id);
+                } else if (weapons.length > 1) {
+                    ui.notifications.info("Selecione qual arma usar na aba ATAQUE.");
+                    this.activeTab = "ataque";
+                    this.render();
+                } else {
+                    ui.notifications.warn("Nenhuma arma equipada para o Ataque Montado.");
+                }
+                return;
+            }
+
+            // 4. MANIPULAÇÃO DE MANOBRAS PADRÃO (Descrição no Chat)
             const descriptions = {
-                "ajudar": "Concede +1D em um teste de um aliado ou +2 na Defesa dele ate o inicio do seu proximo turno. (Acao Menor)",
-                "interagir": "Realizar tarefas simples como abrir uma porta, pegar um item do chao, sacar uma arma ou montar em um cavalo. (Acao Menor)",
-                "levantar": "Levantar-se do chao consome uma acao menor e nao provoca ataques de oportunidade. (Acao Menor)",
-                "mover": "Permite mover-se uma distancia de quadrados igual a sua Graduacao em Atletismo. (Acao Menor)",
-                "carga": "Move-se e ataca em uma unica acao. Recebe -1D no teste de Luta, mas soma +2 no Dano final. (Acao Maior)",
-                "corrida": "Move-se uma distancia de quadrados igual a 4x sua Graduacao em Atletismo. (Acao Maior)",
-                "derrubar": "Teste de Atletismo (Forca) ou Luta (Briga) contra a Defesa Passiva do alvo para deixa-lo caido. (Acao Maior)",
-                "desarmar": "Teste de Luta contra a Defesa do alvo para tentar remover a arma das maos dele. (Acao Maior)",
-                "esquiva": "Realiza um teste de Agilidade (Esquiva). O resultado substitui sua Defesa contra todos os ataques ate o proximo turno. (Acao Maior)",
-                "fintar": "Teste de Enganacao (Astucia) contra a Defesa do alvo. Se vencer, ganha +1D no proximo ataque e ignora o bonus de Defesa do alvo. (Acao Maior)",
-                "imobilizar": "Teste de Atletismo (Forca) contra Atletismo para agarrar e imobilizar o alvo, impedindo-o de agir livremente. (Acao Maior)",
-                "passar": "Fica em guarda aguardando uma oportunidade. Recebe +2B no proximo teste ou acao de ataque. (Acao Maior)",
-                "puxar_cavaleiro": "Teste de Atletismo (Forca) contra o Atletismo do cavaleiro para tentar derruba-lo da montaria. (Acao Maior)",
-                "recuperar_folego": "Teste de Vigor para recuperar 1 de Ferimento sofrido ou 1 ponto de Esforco gasto nesta cena. (Acao Maior)",
-                "atq_dividido": "Permite dividir seus dados de Luta ou Pontaria para atacar multiplos alvos em um unico turno. (Acao Maior)",
-                "atq_duas_armas": "Ataque com uma arma em cada mao. Aplica as penalidades de mao inabil conforme as regras de combate. (Acao Maior)",
-                "atq_montado": "Ataque realizado enquanto montado. Recebe +1B em testes de Luta contra alvos que estejam a pe. (Acao Maior)"
+                "ajudar": "Concede +1D em um teste de um aliado ou +2 na Defesa dele ate o inicio do seu proximo turno. (Ação Menor)",
+                "interagir": "Realizar tarefas simples como sacar uma arma ou montar em um cavalo. (Ação Menor)",
+                "levantar": "Levantar-se do chao consome uma ação menor e não provoca ataques de oportunidade. (Ação Menor)",
+                "mover": "Permite mover-se uma distância em quadrados igual a sua Graduação em Atletismo. (Ação Menor)",
+                "carga": "Move-se e ataca. Recebe -1D no teste de Luta, mas soma +2 no Dano final. (Ação Maior)",
+                "corrida": "Move-se uma distância igual a 4x sua Graduação em Atletismo. (Ação Maior)",
+                "derrubar": "Teste de Atletismo ou Luta contra a Defesa do alvo para deixá-lo caído. (Ação Maior)",
+                "desarmar": "Teste de Luta contra a Defesa do alvo para remover a arma das mãos dele. (Ação Maior)",
+                "esquiva": "Realiza um teste de Agilidade. O resultado substitui sua Defesa até o proximo turno. (Ação Maior)",
+                "fintar": "Teste de Enganação contra Defesa. Se vencer, ganha +1D no proximo ataque. (Ação Maior)",
+                "imobilizar": "Tenta imobilizar o alvo, impedindo-o de agir livremente. (Ação Maior)",
+                "passar": "Fica em guarda. Recebe +2B no proximo teste de ataque. (Ação Maior)",
+                "puxar_cavaleiro": "Tenta derrubar o cavaleiro de sua montaria. (Ação Maior)",
+                "recuperar_folego": "Teste de Vigor para recuperar 1 de Ferimento ou Esforço. (Ação Maior)",
+                "atq_duas_armas": "Ataca com uma arma em cada mão aplicando penalidades. (Ação Maior)"
             };
 
-            const content = `
-            <div class="got-chat-card maneuver-card">
-                <header class="card-header">
-                    <i class="${ev.currentTarget.querySelector('i').className}"></i>
-                    <h3>${name}</h3>
-                </header>
-                <div class="card-content">
-                    <p>${descriptions[id] || "Descricao da manobra nao encontrada."}</p>
-                </div>
-            </div>
-        `;
-
-            await ChatMessage.create({
+            const desc = descriptions[actionId] || "Manobra de Combate: Realiza uma ação estratégica no campo de batalha.";
+            
+            ChatMessage.create({
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: actor }),
-                content: content
+                content: `
+                    <div class="got-hud-card">
+                        <header class="card-header">
+                            <i class="fas fa-chess-knight" style="font-size: 1.5em; color: #d4af37; margin-right: 10px;"></i>
+                            <h3 style="color:#ffd700; margin:0;">${data.name}</h3>
+                        </header>
+                        <div class="card-content" style="margin-top: 10px; font-size: 0.95em;">
+                            ${desc}
+                        </div>
+                    </div>`
             });
-            ui.notifications.info(`Manobra [${name}] enviada ao chat.`);
         });
+
 
         // Qualities (Powers) - Send to Chat
         html.find('.hud-quality').click(async ev => {
@@ -2610,7 +2782,7 @@ class GOTCombatHUD extends Application {
             if (!item) return;
 
             const content = `
-                <div class="got-chat-card">
+                <div class="got-hud-card">
                     <header class="card-header">
                         <img src="${item.img}" width="36" height="36"/>
                         <h3>${item.name}</h3>
@@ -2951,40 +3123,122 @@ class GOTBattleHUD extends Application {
         html.find('.hud-maneuver').click(async ev => {
             const data = ev.currentTarget.dataset;
             const actor = this.activeToken.actor;
-            const isStance = data.isStance === "true";
+            if (!actor) return;
+            
+            const actionId = (data.id || "").toLowerCase().trim();
+            const actionName = (data.name || "").toLowerCase().trim();
 
-            // If it's a stance, toggle it on/off
+            // 1. ESPECIAL: CARGA MONTADA (Toggle)
+            if (actionId.includes("carga") || actionName.includes("carga")) {
+                const current = actor.getFlag("got-character-sheet", "charging") || false;
+                await actor.setFlag("got-character-sheet", "charging", !current);
+                if (!current) {
+                    ui.notifications.info(`${actor.name} está preparando uma Carga Montada (+2 Dano no próximo ataque)!`);
+                }
+                this.render();
+                return;
+            }
+
+            // 2. ESPECIAL: PISOTEAR (Rolo de Ataque)
+            if (actionId.includes("pisotear") || actionName.includes("pisotear")) {
+                const ability = actor.system.habilidades?.lidar_com_animais?.base || 2;
+                let specBonus = 0;
+                const specs = actor.system.habilidades?.lidar_com_animais?.especialidades || {};
+                for (let [k, v] of Object.entries(specs)) {
+                    if (k.toLowerCase().includes("montar")) {
+                        specBonus = v;
+                        break;
+                    }
+                }
+                const roll = new Roll(`${ability + specBonus}d6kh${ability}`);
+                await roll.evaluate();
+                
+                const mount = actor.items?.find(i => i.system?.type === "montaria" && i.system?.uso === true);
+                const dmgValue = mount?.system?.ataques?.pisotear?.dano || 2;
+                const attrVal = actor.system.habilidades?.atletismo?.base || 2;
+
+                let content = `
+                    <div class="got-hud-card weapon-card">
+                        <header class="card-header">
+                            <img src="${actor.img}" title="${actor.name}"/>
+                            <h3>Pisotear (Montaria)</h3>
+                        </header>
+                        <div class="card-content">
+                            <b>Teste de Lidar com Animais (Montar):</b> ${roll.total}<br>
+                            <b>Dano:</b> ${dmgValue + attrVal}<br>
+                            <small>Alvo fica Caído se atingido.</small>
+                        </div>
+                    </div>`;
+
+                ChatMessage.create({
+                    user: game.user.id,
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    content: content,
+                    rolls: [roll],
+                    type: CONST.CHAT_MESSAGE_TYPES.ROLL
+                });
+                return;
+            }
+
+            // 3. ESPECIAL: ATAQUE MONTADO (Shortcut)
+            if (actionId === "atq_montado" || actionId === "ataque montado") {
+                const weapons = actor.items.filter(i => i.system.type === "arma");
+                if (weapons.length === 1) {
+                    const sheet = (actor.sheet instanceof GOTActorSheet) ? actor.sheet : new GOTActorSheet(actor);
+                    sheet.rollWeapon(weapons[0].id);
+                } else if (weapons.length > 1) {
+                    ui.notifications.info("Selecione qual arma usar para o Ataque Montado.");
+                } else {
+                    ui.notifications.warn("Nenhuma arma equipada para o Ataque Montado.");
+                }
+                return;
+            }
+
+            // 4. PADRÃO: Enviar descrição da manobra
+            const descriptions = {
+                "ajudar": "Concede +1D em um teste de um aliado ou +2 na Defesa dele ate o inicio do seu proximo turno. (Acao Menor)",
+                "interagir": "Realizar tarefas simples como abrir uma porta, pegar um item do chao, sacar uma arma ou montar em um cavalo. (Acao Menor)",
+                "levantar": "Levantar-se do chao consome uma acao menor e nao provoca ataques de oportunidade. (Acao Menor)",
+                "mover": "Permite mover-se uma distancia de quadrados igual a sua Graduacao em Atletismo. (Acao Menor)",
+                "carga": "Move-se e ataca em uma unica acao. Recebe -1D no teste de Luta, mas soma +2 no Dano final. (Acao Maior)",
+                "corrida": "Move-se uma distancia de quadrados igual a 4x sua Graduacao em Atletismo. (Acao Maior)",
+                "derrubar": "Teste de Atletismo (Forca) ou Luta (Briga) contra a Defesa Passiva do alvo para deixa-lo caido. (Acao Maior)",
+                "desarmar": "Teste de Luta contra a Defesa do alvo para tentar remover a arma das maos dele. (Acao Maior)",
+                "esquiva": "Realiza um teste de Agilidade (Esquiva). O resultado substitui sua Defesa contra todos os ataques ate o proximo turno. (Acao Maior)",
+                "fintar": "Teste de Enganacao (Astucia) contra a Defesa do alvo. Se vencer, ganha +1D no proximo ataque e ignora o bonus de Defesa do alvo. (Acao Maior)",
+                "imobilizar": "Teste de Atletismo (Forca) contra Atletismo para agarrar e imobilizar o alvo, impedindo-o de agir livremente. (Acao Maior)",
+                "passar": "Fica em guarda aguardando uma oportunidade. Recebe +2B no proximo teste ou acao de ataque. (Acao Maior)",
+                "puxar_cavaleiro": "Teste de Atletismo (Forca) contra o Atletismo do cavaleiro para tentar derruba-lo da montaria. (Acao Maior)",
+                "recuperar_folego": "Teste de Vigor para recuperar 1 de Ferimento sofrido ou 1 ponto de Esforco gasto nesta cena. (Acao Maior)",
+                "atq_dividido": "Permite dividir seus dados de Luta ou Pontaria para atacar multiplos alvos em um unico turno. (Acao Maior)",
+                "atq_duas_armas": "Ataque com uma arma em cada mao. Aplica as penalidades de mao inabil conforme as regras de combate. (Acao Maior)"
+            };
+
+            const isStance = data.isStance === "true";
             if (isStance) {
                 const currentStance = actor.system.militar.posturaAtiva || "";
                 const newStance = (currentStance === data.name) ? "" : data.name;
                 await actor.update({ "system.militar.posturaAtiva": newStance });
-
-                if (newStance) {
-                    ui.notifications.info(`${actor.name} assumiu a postura: ${newStance}`);
-                } else {
-                    ui.notifications.info(`${actor.name} desativou sua postura.`);
-                }
+                ui.notifications.info(`${actor.name} assumiu a postura: ${newStance || "Desconectada"}`);
+                this.render();
+                return;
             }
 
             const content = `
-                <div class="got-chat-card maneuver-card">
+                <div class="got-hud-card maneuver-card">
                     <header class="card-header">
-                        <img src="${actor.img}" title="${actor.name}"/>
+                        <i class="${ev.currentTarget.querySelector('i')?.className || 'fas fa-dice'}"></i>
                         <h3>${data.name}</h3>
                     </header>
                     <div class="card-content">
-                        <div class="maneuver-info">
-                            <span><strong>Requisito:</strong> ${data.specialty} ${data.req}</span><br>
-                            <span><strong>BenefÃ­cio:</strong> ${data.bonus}</span>
-                        </div>
-                        <hr>
-                        <p class="maneuver-description">${data.desc}</p>
+                        <p>${descriptions[actionId] || "Descricao da manobra nao encontrada."}</p>
                     </div>
                 </div>
             `;
 
             await ChatMessage.create({
-                speaker: ChatMessage.getSpeaker({ actor }),
+                user: game.user.id,
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
                 content: content,
                 type: CONST.CHAT_MESSAGE_TYPES.OTHER
             });
@@ -3098,14 +3352,59 @@ Hooks.once("init", () => {
     });
 });
 
-Hooks.once("ready", () => {
-    console.log("GOT | Ready - Token Detection");
-    // Auto-detect controlled token on start
-    const controlled = canvas.tokens?.controlled || [];
-    if (controlled.length > 0) {
-        game.gotHUD.updateToken(controlled[0]);
+// Override Foundry initiative to use SIFRP custom formulas
+async function gotRollAllInitiative(combat) {
+    for (const combatant of combat.combatants) {
+        if (combatant.initiative !== null) continue;
+        const actor = combatant.actor;
+        if (!actor) continue;
+
+        let roll;
+        let flavorLabel;
+
+        if (actor.system.tipo_ficha === "unit") {
+            const mil = actor.system.militar;
+            let warfare = 2;
+            let cmdName = "Sem Comandante";
+            if (mil?.comandante) {
+                const cmd = game.actors.get(mil.comandante);
+                if (cmd) {
+                    warfare = cmd.system.habilidades?.guerra?.base || 2;
+                    cmdName = cmd.name;
+                }
+            }
+            roll = new Roll(`${warfare}d6`);
+            flavorLabel = `<b>Iniciativa de Massa (${actor.name})</b><br>Comandante: ${cmdName} | Guerra: ${warfare}`;
+        } else {
+            const agility = actor.system.habilidades?.agilidade?.base || 2;
+            const rapidez = actor.system.habilidades?.agilidade?.especialidades?.rapidez || 0;
+            const wounds = Number(actor.system.combate_intriga?.lesoes?.value) || 0;
+            const injuries = Number(actor.system.combate_intriga?.ferimentos?.value) || 0;
+            const diceCount = Math.max(1, (agility + rapidez) - wounds);
+            const keepCount = Math.max(1, agility - wounds);
+            let formula = `${diceCount}d6kh${keepCount}`;
+            if (injuries > 0) formula += ` - ${injuries}`;
+            roll = new Roll(formula);
+            let penaltyLabel = "";
+            if (rapidez > 0) penaltyLabel += `<br><span style="color:blue">Bonus de Rapidez: +${rapidez}B</span>`;
+            if (wounds > 0) penaltyLabel += `<br><span style="color:red">Penalidade (Lesao): -${wounds}D</span>`;
+            if (injuries > 0) penaltyLabel += `<br><span style="color:red">Penalidade (Ferimento): -${injuries}</span>`;
+            flavorLabel = `<b>Iniciativa de Combate (${actor.name})</b><br>Agilidade: ${agility}${penaltyLabel}`;
+        }
+
+        await roll.evaluate();
+        await roll.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            flavor: flavorLabel
+        });
+        await combatant.update({ initiative: roll.total });
     }
+}
+
+Hooks.on("combatStart", async (combat) => {
+    await gotRollAllInitiative(combat);
 });
+
 
 // Sidebar Controls
 Hooks.on("getSceneControlButtons", (controls) => {
@@ -3254,6 +3553,28 @@ Hooks.on("renderChatMessage", (app, html, data) => {
         ui.notifications.warn(`${target.name} recebeu uma Lesão! Todo o dano de saúde foi ignorado.`);
         disableButtons(ev.currentTarget);
     });
+
+    // 5. MOUNT DAMAGE (Dano à Montaria)
+    html.find(".apply-mount-damage-btn").click(async ev => {
+        ev.preventDefault();
+        const target = getTarget(ev.currentTarget);
+        if (!target) return ui.notifications.error("Alvo não encontrado.");
+
+        const mount = target.items?.find(i => i.system?.type === "montaria" && i.system?.uso === true);
+        if (!mount) return ui.notifications.warn(`${target.name} não tem uma montaria ativa!`);
+
+        const damage = parseInt(ev.currentTarget.dataset.damage);
+        const currentHP = mount.system?.saude?.value || 0;
+        const newHP = Math.max(0, currentHP - damage);
+
+        await mount.update({ "system.saude.value": newHP });
+        ui.notifications.info(`A montaria ${mount.name} de ${target.name} sofreu ${damage} de dano! (Saúde: ${newHP}/${mount.system?.saude?.max || 0})`);
+
+        if (newHP <= 0) {
+            ui.notifications.warn(`A montaria ${mount.name} de ${target.name} foi abatida!`);
+        }
+        disableButtons(ev.currentTarget);
+    });
 });
 
 // Global initialization
@@ -3302,6 +3623,7 @@ Hooks.once("init", () => {
         }
     });
 });
+
 
 Hooks.once("ready", () => {
     console.log("GOT | Ready - Token Detection");

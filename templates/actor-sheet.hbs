@@ -368,6 +368,31 @@
           {{/each}}
         </div>
 
+        {{!-- Montarias --}}
+        <div class="item-group">
+          <div class="group-header">
+            <h3>Montarias & Cavalos</h3>
+            {{#if owner}}
+            <a class="item-create" title="Criar Montaria" data-type="montaria"><i class="fas fa-plus"></i> Adicionar</a>
+            {{/if}}
+          </div>
+          {{#each montarias as |item|}}
+          <div class="item-row" data-item-id="{{item.id}}">
+            <div class="item-name">
+              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+              <span>{{item.name}} (Mov {{item.system.movimento}})</span>
+            </div>
+            {{#if ../owner}}
+            <div class="item-controls">
+              <input type="checkbox" class="item-toggle-usage" title="Montar/Desmontar" {{checked item.system.uso}} />
+              <a class="item-edit" title="Editar"><i class="fas fa-edit"></i></a>
+              <a class="item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+
         {{!-- Equipamento --}}
         <div class="item-group">
           <div class="group-header">
@@ -450,13 +475,30 @@
               </div>
             </div>
             <div class="resource-inputs">
-              <input type="number" name="system.combate_intriga.saude.value"
-                value="{{system.combate_intriga.saude.value}}" {{#if (not owner)}}readonly{{/if}} />
+              <input type="number" name="system.combate_intriga.saude.value" value="{{system.combate_intriga.saude.value}}" {{#if (not owner)}}readonly{{/if}} />
               <span> / </span>
-              <input type="number" name="system.combate_intriga.saude.max" value="{{system.combate_intriga.saude.max}}"
-                readonly />
+              <input type="number" name="system.combate_intriga.saude.max" value="{{system.combate_intriga.saude.max}}" readonly />
             </div>
           </div>
+
+          {{#if activeMount}}
+          {{!-- Horse Health Bar --}}
+          <div class="status-item health-block mount-health">
+            <div class="health-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="color: #d2691e;"><i class="fas fa-horse"></i> Saúde da Montaria</label>
+              <div class="health-bar-container mount-bar" title="{{activeMount.system.saude.value}} / {{activeMount.system.saude.max}}">
+                <div class="health-bar-body" style="border-color: #8b4513;">
+                  <div class="health-bar-fill" style="width: {{mountHealthPct}}%; background: linear-gradient(90deg, #d2691e, #ff8c00);"></div>
+                </div>
+              </div>
+            </div>
+            <div class="resource-inputs">
+              <input type="number" name="items.{{activeMount.id}}.system.saude.value" value="{{activeMount.system.saude.value}}" />
+              <span> / </span>
+              <input type="number" value="{{activeMount.system.saude.max}}" readonly />
+            </div>
+          </div>
+          {{/if}}
 
           {{!-- Esforço Diário (SIFRP) --}}
           <div class="status-item effort-block">
