@@ -1412,18 +1412,26 @@ class GOTActorSheet extends ActorSheet {
                 const powS = powerfulBonus > 0 ? ` + ${powerfulBonus} Poderosa` : "";
                 flavor += `<br>Dano Final: <b>${finalDmg}</b> (${damage} + ${extraDmg}${powS}${critCalcMsg}${arMsg})`;
                 
-                // Personal Combat Damage Buttons
-                flavor += `<div class="combat-damage-buttons" style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;">
-                    <button class="apply-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
-                        <i class="fas fa-heart-broken"></i> Aplicar Dano (${finalDmg})
-                    </button>
-                    <button class="apply-injury-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(184, 134, 11, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
-                        <i class="fas fa-hand-holding-medical"></i> Receber Ferimento (-Resistência)
-                    </button>
-                    <button class="apply-wound-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(47, 79, 79, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
-                        <i class="fas fa-skull"></i> Receber Lesão (0 Dano)
-                    </button>
-                </div>`;
+                // Context-Aware Damage Buttons
+                if (combat.targetType === "unit") {
+                    flavor += `<div class="combat-damage-buttons" style="margin-top: 10px;">
+                        <button class="apply-unit-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 6px; width: 100%;">
+                            <i class="fas fa-fist-raised"></i> Aplicar Dano à Tropa (${finalDmg})
+                        </button>
+                    </div>`;
+                } else {
+                    flavor += `<div class="combat-damage-buttons" style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;">
+                        <button class="apply-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                            <i class="fas fa-heart-broken"></i> Aplicar Dano (${finalDmg})
+                        </button>
+                        <button class="apply-injury-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(184, 134, 11, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                            <i class="fas fa-hand-holding-medical"></i> Receber Ferimento (-Resistência)
+                        </button>
+                        <button class="apply-wound-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(47, 79, 79, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                            <i class="fas fa-skull"></i> Receber Lesão (0 Dano)
+                        </button>
+                    </div>`;
+                }
             } else {
                 flavor += `<br><span style="color:red">Errou o ataque!</span>`;
             }
@@ -1518,7 +1526,25 @@ class GOTActorSheet extends ActorSheet {
                 flavor += `<hr><b>Alvo:</b> ${combat.targetName}<br>Defesa: ${combat.defense} | Margem: ${combat.margin >= 0 ? "+" : ""}${combat.margin}`;
                 if (combat.margin >= 0) {
                     flavor += `<br>Graus: <b>${degrees}</b><br>Dano Final: <b>${finalDmg}</b> (${damage} + ${degrees - 1} Graus${arMsg})`;
-                    flavor += `<button class="apply-unit-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="margin-top: 5px; cursor: pointer; background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 3px;"><i class="fas fa-sword"></i> Aplicar Dano</button>`;
+                    
+                    // Context-Aware Damage Buttons
+                    if (combat.targetType === "unit") {
+                        flavor += `<button class="apply-unit-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="margin-top: 10px; cursor: pointer; background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 4px; padding: 6px; width: 100%;">
+                            <i class="fas fa-fist-raised"></i> Aplicar Dano à Tropa (${finalDmg})
+                        </button>`;
+                    } else {
+                        flavor += `<div class="combat-damage-buttons" style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;">
+                            <button class="apply-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                                <i class="fas fa-heart-broken"></i> Aplicar Dano (${finalDmg})
+                            </button>
+                            <button class="apply-injury-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(184, 134, 11, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                                <i class="fas fa-hand-holding-medical"></i> Receber Ferimento (-Resistência)
+                            </button>
+                            <button class="apply-wound-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(47, 79, 79, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                                <i class="fas fa-skull"></i> Receber Lesão (0 Dano)
+                            </button>
+                        </div>`;
+                    }
                 } else {
                     flavor += `<br><span style="color:red">Errou o ataque!</span>`;
                 }
@@ -2114,6 +2140,7 @@ class GOTActorSheet extends ActorSheet {
         return {
             targetName: target.name,
             targetId: targetActor.id,
+            targetType: targetActor.system.tipo_ficha || "character",
             defense: targetDefense,
             margin: margin,
             degrees: degrees,
