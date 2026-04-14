@@ -1411,6 +1411,19 @@ class GOTActorSheet extends ActorSheet {
                 const critCalcMsg = extraCritDmg > 0 ? ` + ${extraCritDmg} Crit` : "";
                 const powS = powerfulBonus > 0 ? ` + ${powerfulBonus} Poderosa` : "";
                 flavor += `<br>Dano Final: <b>${finalDmg}</b> (${damage} + ${extraDmg}${powS}${critCalcMsg}${arMsg})`;
+                
+                // Personal Combat Damage Buttons
+                flavor += `<div class="combat-damage-buttons" style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;">
+                    <button class="apply-damage-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(139, 0, 0, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                        <i class="fas fa-heart-broken"></i> Aplicar Dano (${finalDmg})
+                    </button>
+                    <button class="apply-injury-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(184, 134, 11, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                        <i class="fas fa-hand-holding-medical"></i> Receber Ferimento (-Resistência)
+                    </button>
+                    <button class="apply-wound-btn" data-target-id="${combat.targetId}" data-damage="${finalDmg}" style="background: rgba(47, 79, 79, 0.8); color: white; border: 1px solid gold; border-radius: 4px; cursor: pointer; padding: 4px;">
+                        <i class="fas fa-skull"></i> Receber Lesão (0 Dano)
+                    </button>
+                </div>`;
             } else {
                 flavor += `<br><span style="color:red">Errou o ataque!</span>`;
             }
@@ -3135,31 +3148,84 @@ Hooks.on("updateUser", (user, update) => {
     }
 });
 
-// Handle Unit Damage Application from Chat
+// Handle Damage Application from Chat
 Hooks.on("renderChatMessage", (app, html, data) => {
+    // Shared logic for finding target
+    const getTarget = (btn) => {
+        const targetId = btn.dataset.targetId;
+        if (!targetId) return null;
+        return game.actors.get(targetId) || canvas.tokens.get(targetId)?.actor;
+    };
+
+    const disableButtons = (btn) => {
+        const container = btn.closest('.combat-damage-buttons') || btn.parentElement;
+        container.querySelectorAll('button').forEach(b => {
+            b.disabled = true;
+            b.style.opacity = "0.5";
+        });
+        btn.innerText = "Dano Aplicado";
+        btn.style.opacity = "1";
+        btn.style.fontWeight = "bold";
+    };
+
+    // 1. UNIT DAMAGE (Simplified)
     html.find(".apply-unit-damage-btn").click(async ev => {
         ev.preventDefault();
-        const btn = ev.currentTarget;
-        const targetId = btn.dataset.targetId;
-        const damage = parseInt(btn.dataset.damage);
+        const target = getTarget(ev.currentTarget);
+        if (!target) return ui.notifications.error("Alvo não encontrado.");
+        const damage = parseInt(ev.currentTarget.dataset.damage);
+        const path = "system.militar.saude.value";
+        const current = foundry.utils.getProperty(target, path) || 0;
+        await target.update({ [path]: Math.max(0, current - damage) });
+        ui.notifications.info(`${target.name} sofreu ${damage} de dano.`);
+        ev.currentTarget.disabled = true;
+        ev.currentTarget.innerText = "Dano Aplicado";
+    });
 
-        if (!targetId) return ui.notifications.warn("Alvo não encontrado nesta mensagem.");
+    // 2. CHARACTER: FULL DAMAGE (Subtrair Vida)
+    html.find(".apply-damage-btn").click(async ev => {
+        ev.preventDefault();
+        const target = getTarget(ev.currentTarget);
+        if (!target) return ui.notifications.error("Alvo não encontrado.");
+        const damage = parseInt(ev.currentTarget.dataset.damage);
+        const current = target.system.combate_intriga?.saude?.value || 0;
+        await target.update({ "system.combate_intriga.saude.value": Math.max(0, current - damage) });
+        ui.notifications.info(`${target.name} sofreu ${damage} de dano.`);
+        disableButtons(ev.currentTarget);
+    });
 
-        const targetActor = game.actors.get(targetId) || canvas.tokens.get(targetId)?.actor;
-        if (!targetActor) return ui.notifications.error("Não foi possível encontrar o ator do alvo.");
+    // 3. CHARACTER: INJURY (Ferimento) -> Dano - Resistencia, e +1 Ferimento
+    html.find(".apply-injury-btn").click(async ev => {
+        ev.preventDefault();
+        const target = getTarget(ev.currentTarget);
+        if (!target) return ui.notifications.error("Alvo não encontrado.");
+        
+        const damage = parseInt(ev.currentTarget.dataset.damage);
+        const res = target.system.habilidades?.resistencia?.base || 2;
+        const currentInjuries = target.system.combate_intriga?.ferimentos?.value || 0;
+        const currentHealth = target.system.combate_intriga?.saude?.value || 0;
 
-        if (targetActor) {
-            const pathValue = targetActor.system.tipo_ficha === "unit" ? "system.militar.saude.value" : "system.combate_intriga.saude.value";
-            const currentHealth = foundry.utils.getProperty(targetActor, pathValue) || 0;
-            const newHealth = Math.max(0, currentHealth - damage);
+        const effectiveDmg = Math.max(0, damage - res);
+        await target.update({ 
+            "system.combate_intriga.saude.value": Math.max(0, currentHealth - effectiveDmg),
+            "system.combate_intriga.ferimentos.value": currentInjuries + 1
+        });
 
-            await targetActor.update({ [pathValue]: newHealth });
-            ui.notifications.info(`Dano aplicado! ${targetActor.name} sofreu ${damage} de dano.`);
+        ui.notifications.info(`${target.name} recebeu um Ferimento! Reduziu o dano em ${res} e sofreu ${effectiveDmg} na Saúde.`);
+        disableButtons(ev.currentTarget);
+    });
 
-            btn.disabled = true;
-            btn.style.opacity = "0.5";
-            btn.innerText = "Dano Aplicado";
-        }
+    // 4. CHARACTER: WOUND (Lesão) -> 0 Dano, e +1 Lesão
+    html.find(".apply-wound-btn").click(async ev => {
+        ev.preventDefault();
+        const target = getTarget(ev.currentTarget);
+        if (!target) return ui.notifications.error("Alvo não encontrado.");
+
+        const currentWounds = target.system.combate_intriga?.lesoes?.value || 0;
+        await target.update({ "system.combate_intriga.lesoes.value": currentWounds + 1 });
+
+        ui.notifications.warn(`${target.name} recebeu uma Lesão! Todo o dano de saúde foi ignorado.`);
+        disableButtons(ev.currentTarget);
     });
 });
 
