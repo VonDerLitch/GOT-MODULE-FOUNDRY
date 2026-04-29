@@ -935,6 +935,7 @@ class GOTActorSheet extends ActorSheet {
         html.find('.add-condition-btn').click(this._onAddCondition.bind(this));
         html.find('.point-adjust').click(this._onPointAdjust.bind(this));
         html.find('.unit-prop-adjust').click(this._onUnitPropAdjust.bind(this));
+        html.find('.btn-calc-casualties').click(this._onCalcCasualties.bind(this));
 
         html.find('.open-family-tree').on('click', ev => {
             ev.preventDefault();
@@ -1650,6 +1651,102 @@ class GOTActorSheet extends ActorSheet {
             const combatant = game.combat.combatants.find(c => c.actorId === this.actor.id);
             if (combatant) await combatant.update({ initiative: roll.total });
         }
+    }
+
+    async _onCalcCasualties(event) {
+        event.preventDefault();
+        const rootHtml = $(event.currentTarget).closest('form');
+
+        // Puxar diretamente dos elementos que estao na tela para ser 100% fiel ao que o usuario ve
+        const maxHP = parseInt(rootHtml.find('.max-health-auto').text()) || 1;
+        const curHP = parseInt(rootHtml.find('input[name="system.militar.saude.value"]').val()) || 0;
+        const sizeSelect = rootHtml.find('select[name="system.militar.tamanho"]').val() || "";
+
+        let tStr = sizeSelect.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        let troopCount = 100;
+        
+        if (tStr.includes("pelotao")) { troopCount = 10; }
+        else if (tStr.includes("unidade")) { troopCount = 100; }
+        else if (tStr.includes("batalhao")) { troopCount = 500; }
+        else if (tStr.includes("legiao")) { troopCount = 1000; }
+
+        const lostBase = Math.max(0, maxHP - curHP);
+        
+        const content = `
+        <form>
+            <p><strong>Tamanho da Tropa:</strong> ${troopCount} guerreiros</p>
+            <p><strong>Saúde da Unidade:</strong> ${curHP} de ${maxHP} (Perdido: ${lostBase})</p>
+            <hr>
+            <div class="form-group">
+                <label title="Quantas vezes esta tropa chegou a 0 de vida e você rolou Disciplina para Reagrupar?">
+                    Vezes que usou "Reagrupar" na Batalha:
+                </label>
+                <input type="number" id="calc-disc-uses" value="0" min="0" />
+            </div>
+            <p style="font-size: 0.85em; color: #555; margin-top: 5px; text-align: justify;">A Vida é um fator secundário (dita a fadiga atual). Cada <b>Reagrupar</b> que a Tropa precisou sofrer significa que ela foi temporariamente destruída, resultando em pesadas baixas definitivas.</p>
+        </form>`;
+
+        new Dialog({
+            title: "Calculadora de Baixas Pós-Batalha",
+            content: content,
+            buttons: {
+                calc: {
+                    label: "Calcular Resumo",
+                    icon: '<i class="fas fa-calculator"></i>',
+                    callback: async (html) => {
+                        const discUses = parseInt(html.find('#calc-disc-uses').val()) || 0;
+
+                        // A Vida é secundária: Se perder TODA a vida (100%), resulta em no máximo 20% de baixas.
+                        const taxaVida = (lostBase / maxHP) * 0.20;
+                        
+                        // Reagrupar é MUITO punitivo: Cada vez que a tropa quebra e reagrupa, perdem-se 25% das tropas.
+                        const taxaDisciplina = discUses * 0.25;
+
+                        // Soma as taxas e limita a 100% de mortalidade (1.0)
+                        const totalCasualtyRate = Math.min(1.0, taxaVida + taxaDisciplina);
+                        
+                        const mortos = Math.round(troopCount * totalCasualtyRate);
+                        const sobreviventes = troopCount - mortos;
+
+                        let msg = `
+                        <div style="border: 2px solid #8b0000; padding: 10px; border-radius: 5px; background: rgba(0,0,0,0.05); font-family: sans-serif;">
+                            <h3 style="text-align: center; color: #8b0000; margin-top: 0;"><i class="fas fa-flag"></i> Relatório de Baixas</h3>
+                            <p><strong>Tropa:</strong> ${this.actor.name}</p>
+                            <p><strong>Tamanho Original:</strong> ${troopCount} guerreiros</p>
+                            <p><strong>Vida Secundária:</strong> Perdida ${lostBase} de ${maxHP}</p>
+                        `;
+
+                        if (discUses > 0) {
+                            msg += `<p style="color: darkred;"><strong>Reagrupamentos (${discUses}x):</strong> Tropa foi debandada e forçada a reconstituir a linha, sofrendo pesadas fatalidades definitivas!</p>`;
+                        }
+
+                        if (curHP <= 0) {
+                            msg += `<p style="color: red; font-weight: bold; text-align: center; font-size: 1.1em; border-top: 1px dashed red; border-bottom: 1px dashed red; padding: 5px 0;">A TROPA QUEBROU!</p>
+                            <p style="text-align: justify;">Chegando a 0 de Vida, a tropa debandou de forma desordenada do campo de batalha. Muitos podem ter sido mortos tentando fugir.</p>`;
+                        }
+
+                        msg += `
+                            <hr style="border-color: #8b0000;">
+                            <ul style="list-style: none; padding: 0;">
+                                <li><i class="fas fa-skull" style="color: darkred; width: 20px;"></i> <strong>Mortos Definitivos:</strong> ${mortos}</li>
+                                <li><i class="fas fa-walking" style="color: darkgreen; width: 20px;"></i> <strong>Sobreviventes Totais:</strong> <span style="font-weight:bold; font-size: 1.2em;">${sobreviventes}</span></li>
+                            </ul>
+                            <div style="margin-top: 10px; font-size: 0.8em; color: #666; border-top: 1px solid #ccc; padding-top: 5px;">
+                                <strong>Entenda o Cálculo:</strong><br>
+                                Cada uso de <em>Reagrupar</em> resulta em <strong>25% de baixas</strong> da tropa original por debandada severa. Além disso, a proporção exata de <em>Vida Secundária Perdida</em> resulta em até <strong>20%</strong> em mortes pelo desgaste padrão de combate e fadiga.
+                                <br><small>➤ (Reagrupar: +${discUses * 25}%) + (Vida: +${Math.round(taxaVida * 100)}%) = Baixa Total de ${Math.round(totalCasualtyRate * 100)}% da Tropa</small>
+                            </div>
+                        </div>`;
+
+                        ChatMessage.create({
+                            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                            content: msg
+                        });
+                    }
+                }
+            },
+            default: "calc"
+        }).render(true);
     }
 
     async _onAddCustomManeuver(event) {
